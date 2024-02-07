@@ -31,6 +31,8 @@
             <td ${mealTo.excess ? 'style="color: red"' : 'style="color: green"'}><fmt:formatDate value="${mealToDateTime}" pattern="yyyy-MM-dd HH:mm"/></td>
             <td ${mealTo.excess ? 'style="color: red"' : 'style="color: green"'}><c:out value="${mealTo.description}"/></td>
             <td ${mealTo.excess ? 'style="color: red"' : 'style="color: green"'}><c:out value="${mealTo.calories}"/></td>
+            <td ${mealTo.excess ? 'style="color: red"' : 'style="color: green"'}><c:out value="${mealTo.calories}"/></td>
+            <td><a href="${pageContext.request.contextPath}/edit_meal?id=${mealTo.id}">Update</a></td>
         </tr>
     </с:forEach>
 </table>
