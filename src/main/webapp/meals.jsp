@@ -19,22 +19,28 @@
 <hr>
 <h2>Meals</h2>
 <table>
-    <caption>Meals</caption>
     <tr>
         <th>DateTime</th>
         <th>Description</th>
         <th>Calories</th>
+        <th></th>
+        <th></th>
     </tr>
-    <с:forEach items="${requestScope.meals}" var="mealTo" varStatus="status">
-        <tr>
-            <fmt:parseDate value="${mealTo.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="mealToDateTime" type="date"/>
-            <td ${mealTo.excess ? 'style="color: red"' : 'style="color: green"'}><fmt:formatDate value="${mealToDateTime}" pattern="yyyy-MM-dd HH:mm"/></td>
-            <td ${mealTo.excess ? 'style="color: red"' : 'style="color: green"'}><c:out value="${mealTo.description}"/></td>
-            <td ${mealTo.excess ? 'style="color: red"' : 'style="color: green"'}><c:out value="${mealTo.calories}"/></td>
-            <td ${mealTo.excess ? 'style="color: red"' : 'style="color: green"'}><c:out value="${mealTo.calories}"/></td>
-            <td><a href="${pageContext.request.contextPath}/edit_meal?id=${mealTo.id}">Update</a></td>
+    <с:forEach items="${requestScope.meals}" var="meal" varStatus="status">
+        <tr style="color:${meal.excess ? "red" : "green"}">
+            <fmt:parseDate value="${meal.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="mealDateTime" type="date"/>
+            <td><fmt:formatDate value="${mealDateTime}" pattern="yyyy-MM-dd HH:mm"/></td>
+            <td><c:out value="${meal.description}"/></td>
+            <td><c:out value="${meal.calories}"/></td>
+            <td><c:out value="${meal.calories}"/></td>
+            <td><a href="${pageContext.request.contextPath}/meals?action=update&id=${meal.id}">Update</a></td>
+            <td><a href="${pageContext.request.contextPath}/meals?action=delete&id=${meal.id}">Delete</a></td>
         </tr>
     </с:forEach>
 </table>
+<br>
+<a href="${pageContext.request.contextPath}/meals?action=create">
+    <button type="button">Create new meal</button>
+</a>
 </body>
 </html>

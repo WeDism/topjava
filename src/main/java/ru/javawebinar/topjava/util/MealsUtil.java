@@ -7,19 +7,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MealsUtil {
-    public static final LocalTime START_TIME = LocalTime.of(7, 0);
-    public static final LocalTime END_TIME = LocalTime.of(12, 0);
     public static final int CALORIES_PER_DAY = 2000;
-
-    public static void main(String[] args) {
-        List<Meal> meals = getMealList();
-        List<MealTo> mealsTo = filteredByStreams(new HashSet<>(meals), START_TIME, END_TIME, CALORIES_PER_DAY);
-        mealsTo.forEach(System.out::println);
-    }
 
     public static List<Meal> getMealList() {
         return Arrays.asList(
@@ -33,7 +28,7 @@ public class MealsUtil {
         );
     }
 
-    public static List<MealTo> filteredByStreams(Set<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+    public static List<MealTo> filteredByStreams(Collection<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
                 .collect(
                         Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories))
@@ -45,7 +40,7 @@ public class MealsUtil {
                 .collect(Collectors.toList());
     }
 
-    public static List<MealTo> filteredByStreamsWithTestData(Set<Meal> mealSet) {
+    public static List<MealTo> filteredByStreams(Collection<Meal> mealSet) {
         return MealsUtil.filteredByStreams(
                 mealSet,
                 LocalTime.MIN,
