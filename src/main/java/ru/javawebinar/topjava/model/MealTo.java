@@ -18,14 +18,6 @@ public class MealTo {
         this.excess = excess;
     }
 
-    public MealTo(Meal meal, boolean excess) {
-        this(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
-    }
-
-    public MealTo(MealTo mealTo) {
-        this(mealTo.getId(), mealTo.getDateTime(), mealTo.getDescription(), mealTo.getCalories(), mealTo.isExcess());
-    }
-
     public int getId() {
         return id;
     }
@@ -44,28 +36,5 @@ public class MealTo {
 
     public boolean isExcess() {
         return excess;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MealTo mealTo = (MealTo) o;
-        return id == mealTo.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "MealTo{" +
-                "dateTime=" + dateTime +
-                ", description='" + description + '\'' +
-                ", calories=" + calories +
-                ", excess=" + excess +
-                '}';
     }
 }

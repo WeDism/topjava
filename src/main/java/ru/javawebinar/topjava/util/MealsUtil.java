@@ -36,15 +36,15 @@ public class MealsUtil {
                 );
         return meals.stream()
                 .filter(meal -> TimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime))
-                .map(meal -> new MealTo(meal, caloriesSumByDate.get(meal.getDate()) > caloriesPerDay))
+                .map(meal -> MealsUtil.convertMealTo(meal, caloriesSumByDate.get(meal.getDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
     }
 
-    public static List<MealTo> filteredByStreams(Collection<Meal> mealSet) {
-        return MealsUtil.filteredByStreams(
-                mealSet,
-                LocalTime.MIN,
-                LocalTime.MAX,
-                MealsUtil.CALORIES_PER_DAY);
+    public static MealTo convertMealTo(Meal meal, boolean excess) {
+        return new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
+    }
+
+    public static List<MealTo> filteredByStreams(Collection<Meal> meals) {
+        return MealsUtil.filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY);
     }
 }

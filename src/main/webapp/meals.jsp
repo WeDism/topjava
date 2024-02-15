@@ -30,9 +30,8 @@
         <tr style="color:${meal.excess ? "red" : "green"}">
             <fmt:parseDate value="${meal.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="mealDateTime" type="date"/>
             <td><fmt:formatDate value="${mealDateTime}" pattern="yyyy-MM-dd HH:mm"/></td>
-            <td><c:out value="${meal.description}"/></td>
-            <td><c:out value="${meal.calories}"/></td>
-            <td><c:out value="${meal.calories}"/></td>
+            <td>${meal.description}/></td>
+            <td>${meal.calories}/></td>
             <td><a href="${pageContext.request.contextPath}/meals?action=update&id=${meal.id}">Update</a></td>
             <td><a href="${pageContext.request.contextPath}/meals?action=delete&id=${meal.id}">Delete</a></td>
         </tr>

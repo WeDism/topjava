@@ -1,7 +1,7 @@
 package ru.javawebinar.topjava.web;
 
-import ru.javawebinar.topjava.data.DataMealInMemoryRepository;
-import ru.javawebinar.topjava.data.DataMealRepository;
+import ru.javawebinar.topjava.data.MealInMemoryRepository;
+import ru.javawebinar.topjava.data.MealRepository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
 
@@ -13,28 +13,35 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 public class MealServlet extends HttpServlet {
-    private final DataMealRepository dataMealInMemoryRepository = DataMealInMemoryRepository.INSTANCE;
+    private MealRepository mealRepository;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        this.mealRepository = MealInMemoryRepository.INSTANCE;
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
         String actionText = request.getParameter("action");
         if (actionText != null && !actionText.isEmpty()) {
             Action action = Action.valueOf(actionText.toUpperCase());
             if (action.isUpdate()) {
                 int id = Integer.parseInt(String.valueOf(request.getParameter("id")));
-                request.setAttribute("meal", this.dataMealInMemoryRepository.get(id));
+                request.setAttribute("meal", this.mealRepository.getAll(id));
+                request.setAttribute("action", action.toString());
                 request.getRequestDispatcher("/editMeal.jsp").forward(request, response);
             } else if (action.isDelete()) {
                 int id = Integer.parseInt(String.valueOf(request.getParameter("id")));
-                this.dataMealInMemoryRepository.delete(id);
-                request.setAttribute("meals", MealsUtil.filteredByStreams(this.dataMealInMemoryRepository.get().values()));
-                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                this.mealRepository.delete(id);
+                request.setAttribute("meals", MealsUtil.filteredByStreams(this.mealRepository.getAll()));
+                response.sendRedirect(request.getContextPath() + "/meals");
             } else if (action.isCreate()) {
+                request.setAttribute("action", action.toString());
                 request.getRequestDispatcher("/editMeal.jsp").forward(request, response);
             }
         } else {
-            request.setAttribute("meals", MealsUtil.filteredByStreams(this.dataMealInMemoryRepository.get().values()));
+            request.setAttribute("meals", MealsUtil.filteredByStreams(this.mealRepository.getAll()));
             request.getRequestDispatcher("/meals.jsp").forward(request, response);
         }
     }
@@ -47,10 +54,10 @@ public class MealServlet extends HttpServlet {
         String description = String.valueOf(request.getParameter("description"));
         int calories = Integer.parseInt(String.valueOf(request.getParameter("calories")));
         if (idText == null || idText.isEmpty()) {
-            this.dataMealInMemoryRepository.create(new Meal(dateTime, description, calories));
+            this.mealRepository.create(new Meal(dateTime, description, calories));
         } else {
             int id = Integer.parseInt(idText);
-            this.dataMealInMemoryRepository.update(new Meal(id, dateTime, description, calories));
+            this.mealRepository.update(new Meal(id, dateTime, description, calories));
         }
         response.sendRedirect(request.getContextPath() + "/meals");
     }

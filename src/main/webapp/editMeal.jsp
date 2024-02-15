@@ -8,7 +8,7 @@
 <body>
 <h3><a href="index.html">Home</a></h3>
 <hr>
-<h2>Edit Meal</h2>
+<h2>${requestScope.action} Meal</h2>
 <form action="${pageContext.request.contextPath}/meals" method="post">
     <table>
         <tr>
