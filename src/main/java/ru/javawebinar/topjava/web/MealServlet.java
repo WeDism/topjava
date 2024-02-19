@@ -16,9 +16,9 @@ public class MealServlet extends HttpServlet {
     private MealRepository mealRepository;
 
     @Override
-    public void init() throws ServletException {
-        super.init();
+    public void init() {
         this.mealRepository = MealInMemoryRepository.INSTANCE;
+        this.mealRepository.addAll(MealsUtil.getMealList());
     }
 
     @Override
@@ -27,18 +27,20 @@ public class MealServlet extends HttpServlet {
         if (actionText != null && !actionText.isEmpty()) {
             Action action = Action.valueOf(actionText.toUpperCase());
             if (action.isUpdate()) {
-                int id = Integer.parseInt(String.valueOf(request.getParameter("id")));
-                request.setAttribute("meal", this.mealRepository.getAll(id));
+                int id = Integer.parseInt(request.getParameter("id"));
+                request.setAttribute("meal", this.mealRepository.getById(id));
                 request.setAttribute("action", action.toString());
                 request.getRequestDispatcher("/editMeal.jsp").forward(request, response);
             } else if (action.isDelete()) {
-                int id = Integer.parseInt(String.valueOf(request.getParameter("id")));
+                int id = Integer.parseInt(request.getParameter("id"));
                 this.mealRepository.delete(id);
-                request.setAttribute("meals", MealsUtil.filteredByStreams(this.mealRepository.getAll()));
                 response.sendRedirect(request.getContextPath() + "/meals");
             } else if (action.isCreate()) {
                 request.setAttribute("action", action.toString());
                 request.getRequestDispatcher("/editMeal.jsp").forward(request, response);
+            } else {
+                request.setAttribute("meals", MealsUtil.filteredByStreams(this.mealRepository.getAll()));
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
             }
         } else {
             request.setAttribute("meals", MealsUtil.filteredByStreams(this.mealRepository.getAll()));
@@ -49,7 +51,7 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
-        String idText = String.valueOf(request.getParameter("id"));
+        String idText = request.getParameter("id");
         LocalDateTime dateTime = LocalDateTime.parse(String.valueOf(request.getParameter("dateTime")));
         String description = String.valueOf(request.getParameter("description"));
         int calories = Integer.parseInt(String.valueOf(request.getParameter("calories")));
