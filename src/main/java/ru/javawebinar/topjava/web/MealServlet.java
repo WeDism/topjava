@@ -28,7 +28,6 @@ public class MealServlet extends HttpServlet {
             if (action.isUpdate()) {
                 int id = Integer.parseInt(request.getParameter("id"));
                 request.setAttribute("meal", this.mealRepository.getById(id));
-                request.setAttribute("action", action.toString());
                 request.getRequestDispatcher("/editMeal.jsp").forward(request, response);
                 return;
             } else if (action.isDelete()) {
@@ -37,7 +36,6 @@ public class MealServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/meals");
                 return;
             } else if (action.isCreate()) {
-                request.setAttribute("action", action.toString());
                 request.getRequestDispatcher("/editMeal.jsp").forward(request, response);
                 return;
             }
@@ -50,8 +48,8 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
         String idText = request.getParameter("id");
-        LocalDateTime dateTime = LocalDateTime.parse(String.valueOf(request.getParameter("dateTime")));
-        String description = String.valueOf(request.getParameter("description"));
+        LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("dateTime"));
+        String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
         if (idText == null || idText.isEmpty()) {
             this.mealRepository.create(new Meal(dateTime, description, calories));

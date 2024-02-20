@@ -9,15 +9,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public enum InMemoryMealRepository implements MealRepository {
     INSTANCE;
 
     private final static Logger log = LoggerFactory.getLogger(InMemoryMealRepository.class);
-
     private final Map<Integer, Meal> meals = new ConcurrentHashMap<>();
     private final AtomicInteger currentId = new AtomicInteger(0);
+    private final ReentrantLock reentrantLock = new ReentrantLock();
 
     InMemoryMealRepository() {
         MealsUtil.getMealList().forEach(this::create);
@@ -29,28 +30,28 @@ public enum InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal getById(int id) {
-        if (this.meals.containsKey(id))
-            return new Meal(this.meals.get(id));
+        Meal meal = this.meals.get(id);
+        if (meal != null)
+            return new Meal(meal);
         else return null;
     }
 
     @Override
-    public synchronized void delete(int id) {
+    public void delete(int id) {
         this.meals.remove(id);
     }
 
     @Override
-    public synchronized Meal update(Meal meal) {
-        Meal replace = this.meals.replace(meal.getId(), new Meal(meal));
-        if (replace == null)
+    public Meal update(Meal meal) {
+        Meal replacedMeal = this.meals.replace(meal.getId(), new Meal(meal));
+        if (replacedMeal == null)
             log.warn("Meal with id {} is not present", meal.getId());
         return null;
     }
 
     @Override
-    public synchronized Meal create(Meal meal) {
+    public Meal create(Meal meal) {
         int id = this.currentId.incrementAndGet();
-        this.meals.put(id, new Meal(id, meal));
-        return this.meals.get(id);
+        return this.meals.put(id, new Meal(id, meal));
     }
 }
