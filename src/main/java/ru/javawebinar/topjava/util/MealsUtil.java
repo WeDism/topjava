@@ -44,7 +44,7 @@ public class MealsUtil {
         return new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
 
-    public static List<MealTo> filteredByStreams(Collection<Meal> meals) {
-        return MealsUtil.filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY);
+    public static List<MealTo> filteredByStreams(Collection<Meal> meals, int caloriesPerDay) {
+        return MealsUtil.filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, caloriesPerDay);
     }
 }

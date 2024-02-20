@@ -1,6 +1,6 @@
 package ru.javawebinar.topjava.web;
 
-import ru.javawebinar.topjava.data.MealInMemoryRepository;
+import ru.javawebinar.topjava.data.InMemoryMealRepository;
 import ru.javawebinar.topjava.data.MealRepository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -17,8 +17,7 @@ public class MealServlet extends HttpServlet {
 
     @Override
     public void init() {
-        this.mealRepository = MealInMemoryRepository.INSTANCE;
-        this.mealRepository.addAll(MealsUtil.getMealList());
+        this.mealRepository = InMemoryMealRepository.INSTANCE;
     }
 
     @Override
@@ -31,21 +30,20 @@ public class MealServlet extends HttpServlet {
                 request.setAttribute("meal", this.mealRepository.getById(id));
                 request.setAttribute("action", action.toString());
                 request.getRequestDispatcher("/editMeal.jsp").forward(request, response);
+                return;
             } else if (action.isDelete()) {
                 int id = Integer.parseInt(request.getParameter("id"));
                 this.mealRepository.delete(id);
                 response.sendRedirect(request.getContextPath() + "/meals");
+                return;
             } else if (action.isCreate()) {
                 request.setAttribute("action", action.toString());
                 request.getRequestDispatcher("/editMeal.jsp").forward(request, response);
-            } else {
-                request.setAttribute("meals", MealsUtil.filteredByStreams(this.mealRepository.getAll()));
-                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                return;
             }
-        } else {
-            request.setAttribute("meals", MealsUtil.filteredByStreams(this.mealRepository.getAll()));
-            request.getRequestDispatcher("/meals.jsp").forward(request, response);
         }
+        request.setAttribute("meals", MealsUtil.filteredByStreams(this.mealRepository.getAll(), MealsUtil.CALORIES_PER_DAY));
+        request.getRequestDispatcher("/meals.jsp").forward(request, response);
     }
 
     @Override
@@ -54,7 +52,7 @@ public class MealServlet extends HttpServlet {
         String idText = request.getParameter("id");
         LocalDateTime dateTime = LocalDateTime.parse(String.valueOf(request.getParameter("dateTime")));
         String description = String.valueOf(request.getParameter("description"));
-        int calories = Integer.parseInt(String.valueOf(request.getParameter("calories")));
+        int calories = Integer.parseInt(request.getParameter("calories"));
         if (idText == null || idText.isEmpty()) {
             this.mealRepository.create(new Meal(dateTime, description, calories));
         } else {

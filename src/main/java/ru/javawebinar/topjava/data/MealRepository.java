@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.data;
 
 import ru.javawebinar.topjava.model.Meal;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface MealRepository {
@@ -15,6 +14,4 @@ public interface MealRepository {
     Meal update(Meal meal);
 
     Meal create(Meal meal);
-
-    Collection<Meal> addAll(Collection<Meal> meals);
 }

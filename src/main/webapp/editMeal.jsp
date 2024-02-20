@@ -8,7 +8,7 @@
 <body>
 <h3><a href="index.html">Home</a></h3>
 <hr>
-<h2>${requestScope.action} Meal</h2>
+<h2>${requestScope.action.toLowerCase() == "create" ? "Create" : "Update"} Meal</h2>
 <form action="${pageContext.request.contextPath}/meals" method="post">
     <table>
         <tr>
