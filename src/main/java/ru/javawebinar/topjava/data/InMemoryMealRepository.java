@@ -52,6 +52,6 @@ public enum InMemoryMealRepository implements MealRepository {
         int id = this.currentId.incrementAndGet();
         Meal newMeal = new Meal(id, meal);
         this.meals.put(id, newMeal);
-        return newMeal;
+        return new Meal(newMeal);
     }
 }
