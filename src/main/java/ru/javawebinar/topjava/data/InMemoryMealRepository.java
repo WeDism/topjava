@@ -39,12 +39,13 @@ public enum InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal update(Meal meal) {
-        Meal replacedMeal = this.meals.replace(meal.getId(), new Meal(meal));
+        Meal newMeal = new Meal(meal);
+        Meal replacedMeal = this.meals.replace(meal.getId(), newMeal);
         if (replacedMeal == null) {
             log.warn("Meal with id {} is not present", meal.getId());
             return null;
         }
-        return replacedMeal;
+        return newMeal;
     }
 
     @Override
