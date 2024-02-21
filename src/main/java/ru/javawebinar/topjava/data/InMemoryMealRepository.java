@@ -45,7 +45,7 @@ public enum InMemoryMealRepository implements MealRepository {
             log.warn("Meal with id {} is not present", meal.getId());
             return null;
         }
-        return newMeal;
+        return new Meal(newMeal);
     }
 
     @Override
