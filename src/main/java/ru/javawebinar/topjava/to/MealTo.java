@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.model;
+package ru.javawebinar.topjava.to;
 
 import java.time.LocalDateTime;
 
@@ -19,33 +19,33 @@ public class MealTo {
     }
 
     public Integer getId() {
-        return id;
+        return this.id;
     }
 
     public LocalDateTime getDateTime() {
-        return dateTime;
+        return this.dateTime;
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public int getCalories() {
-        return calories;
+        return this.calories;
     }
 
     public boolean isExcess() {
-        return excess;
+        return this.excess;
     }
 
     @Override
     public String toString() {
         return "MealTo{" +
-                "id=" + id +
-                ", dateTime=" + dateTime +
-                ", description='" + description + '\'' +
-                ", calories=" + calories +
-                ", excess=" + excess +
+                "id=" + this.id +
+                ", dateTime=" + this.dateTime +
+                ", description='" + this.description + '\'' +
+                ", calories=" + this.calories +
+                ", excess=" + this.excess +
                 '}';
     }
 }

@@ -4,63 +4,67 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class Meal {
-    private Integer id;
-
+public class Meal extends AbstractBaseEntity {
     private final LocalDateTime dateTime;
     private final String description;
     private final int calories;
+    private final int userId;
 
-    public Meal(LocalDateTime dateTime, String description, int calories) {
-        this(null, dateTime, description, calories);
+    public Meal(Integer userId, LocalDateTime dateTime, String description, int calories) {
+        this(null, userId, dateTime, description, calories);
     }
 
-    public Meal(Integer id, LocalDateTime dateTime, String description, int calories) {
-        this.id = id;
+    public Meal(Integer id, Integer userId, LocalDateTime dateTime, String description, int calories) {
+        super(id);
+        this.userId = userId;
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
     }
 
     public Integer getId() {
-        return id;
+        return super.id;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        super.id = id;
     }
 
     public LocalDateTime getDateTime() {
-        return dateTime;
+        return this.dateTime;
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public int getCalories() {
-        return calories;
+        return this.calories;
     }
 
     public LocalDate getDate() {
-        return dateTime.toLocalDate();
+        return this.dateTime.toLocalDate();
     }
 
     public LocalTime getTime() {
-        return dateTime.toLocalTime();
+        return this.dateTime.toLocalTime();
+    }
+
+    public int getUserId() {
+        return this.userId;
     }
 
     public boolean isNew() {
-        return id == null;
+        return super.id == null;
     }
 
     @Override
     public String toString() {
         return "Meal{" +
-                "id=" + id +
-                ", dateTime=" + dateTime +
-                ", description='" + description + '\'' +
-                ", calories=" + calories +
+                "id=" + super.id +
+                ", dateTime=" + this.dateTime +
+                ", description='" + this.description + '\'' +
+                ", calories=" + this.calories +
                 '}';
     }
 }

@@ -6,40 +6,53 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Repository
 public class InMemoryUserRepository implements UserRepository {
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
+    private final Map<Integer, User> repository = new ConcurrentHashMap<>();
+    private final AtomicInteger counter = new AtomicInteger(0);
 
     @Override
     public boolean delete(int id) {
         log.info("delete {}", id);
-        return true;
+        return this.repository.remove(id) != null;
     }
 
     @Override
     public User save(User user) {
         log.info("save {}", user);
-        return user;
+        if (user.isNew()) {
+            user.setId(counter.incrementAndGet());
+            this.repository.put(user.getId(), user);
+            return user;
+        }
+        return this.repository.computeIfPresent(user.getId(), (id, oldUser) -> user);
     }
 
     @Override
     public User get(int id) {
         log.info("get {}", id);
+        this.repository.get(id);
         return null;
     }
 
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        return Collections.emptyList();
+        return new ArrayList<>(this.repository.values());
     }
 
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        return null;
+        return this.repository.values().stream()
+                .filter(user -> String.valueOf(user.getEmail()).equals(email))
+                .findAny().orElse(null);
     }
 }
