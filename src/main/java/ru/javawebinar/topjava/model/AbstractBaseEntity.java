@@ -7,8 +7,9 @@ public abstract class AbstractBaseEntity {
         this.id = id;
     }
 
-    public void setId(Integer id) {
+    public AbstractBaseEntity setId(Integer id) {
         this.id = id;
+        return this;
     }
 
     public Integer getId() {
