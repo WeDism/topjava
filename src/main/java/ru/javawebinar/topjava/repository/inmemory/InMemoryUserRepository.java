@@ -6,11 +6,12 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryUserRepository implements UserRepository {
@@ -38,21 +39,25 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public User get(int id) {
         log.info("get {}", id);
-        this.repository.get(id);
-        return null;
+        return this.repository.get(id);
     }
 
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        return new ArrayList<>(this.repository.values());
+        return this.repository.values().stream().sorted((userFirst, userSecond) -> {
+            int compared = userFirst.getName().compareTo(userSecond.getName());
+            if (compared == 0)
+                return userFirst.getEmail().compareTo(userSecond.getEmail());
+            else return compared;
+        }).collect(Collectors.toList());
     }
 
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
         return this.repository.values().stream()
-                .filter(user -> String.valueOf(user.getEmail()).equals(email))
+                .filter(user -> Objects.equals(user.getEmail(), email))
                 .findAny().orElse(null);
     }
 }

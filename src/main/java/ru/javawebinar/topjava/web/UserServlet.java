@@ -28,6 +28,6 @@ public class UserServlet extends HttpServlet {
         else if (user == 2)
             SecurityUtil.setUser2();
         else log.error("такого пользователя нет!");
-        request.getRequestDispatcher("/meals.jsp").forward(request, response);
+        response.sendRedirect("meals");
     }
 }

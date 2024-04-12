@@ -21,10 +21,11 @@ import java.util.Objects;
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
     private MealRestController mealRestController;
+    private ConfigurableApplicationContext appCtx;
 
     @Override
     public void init() {
-        ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        this.appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
         this.mealRestController = appCtx.getBean(MealRestController.class);
     }
 
@@ -33,12 +34,14 @@ public class MealServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
-                SecurityUtil.authUserId(),
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")));
+                Integer.parseInt(request.getParameter("calories")),
+                null);
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        this.mealRestController.create(meal);
+        if (meal.isNew())
+            this.mealRestController.create(meal);
+        else this.mealRestController.update(meal);
         response.sendRedirect("meals");
     }
 
@@ -77,7 +80,7 @@ public class MealServlet extends HttpServlet {
                 case "create":
                 case "update":
                     final Meal meal = "create".equals(action) ?
-                            new Meal(userId, LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
+                            new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000, userId) :
                             this.mealRestController.get(this.getId(request));
                     request.setAttribute("meal", meal);
                     request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
@@ -90,6 +93,11 @@ public class MealServlet extends HttpServlet {
                     break;
             }
         }
+    }
+
+    @Override
+    public void destroy() {
+        this.appCtx.close();
     }
 
     private int getId(HttpServletRequest request) {

@@ -45,7 +45,6 @@ public class MealRestController {
     public void update(Meal meal) {
         int userId = SecurityUtil.authUserId();
         log.info("update {} with userId={}", meal, userId);
-        ValidationUtil.assureIdConsistent(meal, userId);
         this.mealService.update(meal, userId);
     }
 
@@ -59,7 +58,7 @@ public class MealRestController {
                                                                LocalDate startDate, LocalDate endDate) {
         int userId = SecurityUtil.authUserId();
         log.info("getAllByUser {}", userId);
-        return MealsUtil.getFilteredTos(this.mealService.getAllByUser(userId),
-                MealsUtil.DEFAULT_CALORIES_PER_DAY, startTime, endTime, startDate, endDate);
+        return MealsUtil.getTos(this.mealService.getAllByUserWithFilter(userId, startTime, endTime, startDate, endDate),
+                MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 }

@@ -5,6 +5,8 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.ValidationUtil;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Collection;
 
 @Service
@@ -31,8 +33,13 @@ public class MealService {
         return this.mealRepository.getAllByUser(userId);
     }
 
+    public Collection<Meal> getAllByUserWithFilter(int userId,
+                                                   LocalTime startTime, LocalTime endTime,
+                                                   LocalDate startDate, LocalDate endDate) {
+        return this.mealRepository.getAllByUserWithFilter(userId, startTime, endTime, startDate, endDate);
+    }
+
     public void update(Meal meal, int userId) {
-        if (this.mealRepository.get(meal.getId(), userId) != null)
-            ValidationUtil.checkNotFoundWithId(this.mealRepository.save(meal, userId), userId);
+        ValidationUtil.checkNotFoundWithId(this.mealRepository.save(meal, userId), userId);
     }
 }
