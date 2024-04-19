@@ -23,7 +23,7 @@
     <a href="meals?action=create">Add Meal</a>
     <br><br>
     <form method="get" action="meals">
-        <input type="hidden" name="filterDate" value="filterDate">
+        <input type="hidden" name="action" value="filter">
         <label for="startDate">Дата от</label>
         <input type="date" id="startDate" name="startDate" value="${param.startDate}">
         <label for="startTime">Время от</label>

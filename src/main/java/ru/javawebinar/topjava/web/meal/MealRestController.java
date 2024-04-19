@@ -3,6 +3,8 @@ package ru.javawebinar.topjava.web.meal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
@@ -13,6 +15,7 @@ import ru.javawebinar.topjava.web.SecurityUtil;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
+import java.util.Objects;
 
 @Controller
 public class MealRestController {
@@ -54,8 +57,12 @@ public class MealRestController {
         return MealsUtil.getTos(this.mealService.getAllByUser(userId), MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 
-    public Collection<MealTo> getAllByUserWithDateTimeFiltered(LocalTime startTime, LocalTime endTime,
-                                                               LocalDate startDate, LocalDate endDate) {
+    public Collection<MealTo> getAllByUserWithDateTimeFiltered(String startDateText, String startTimeText,
+                                                               String endDateText, String endTimeText) {
+        LocalDate startDate = ObjectUtils.isEmpty(startDateText) ? LocalDate.MIN : LocalDate.parse(startDateText);
+        LocalDate endDate = ObjectUtils.isEmpty(endDateText) ? LocalDate.MAX : LocalDate.parse(endDateText);
+        LocalTime startTime = ObjectUtils.isEmpty(startTimeText) ? LocalTime.MIN : LocalTime.parse(startTimeText);
+        LocalTime endTime = ObjectUtils.isEmpty(endTimeText) ? LocalTime.MAX : LocalTime.parse(endTimeText);
         int userId = SecurityUtil.authUserId();
         log.info("getAllByUser {}", userId);
         return MealsUtil.getTos(this.mealService.getAllByUserWithFilter(userId, startTime, endTime, startDate, endDate),

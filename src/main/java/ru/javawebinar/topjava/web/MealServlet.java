@@ -47,51 +47,37 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String filterDate = request.getParameter("filterDate");
-        if (filterDate != null && !filterDate.isEmpty()) {
-            String startDateText = request.getParameter("startDate");
-            String startTimeText = request.getParameter("startTime");
-            String endDateText = request.getParameter("endDate");
-            String endTimeText = request.getParameter("endTime");
-            LocalDate startDate = Objects.isNull(startDateText) || startDateText.isEmpty()
-                    ? LocalDate.MIN
-                    : LocalDate.parse(startDateText);
-            LocalDate endDate = Objects.isNull(endDateText) || endDateText.isEmpty()
-                    ? LocalDate.MAX
-                    : LocalDate.parse(endDateText);
-            LocalTime startTime = Objects.isNull(startTimeText) || startTimeText.isEmpty()
-                    ? LocalTime.MIN
-                    : LocalTime.parse(startTimeText);
-            LocalTime endTime = Objects.isNull(endTimeText) || endTimeText.isEmpty()
-                    ? LocalTime.MAX
-                    : LocalTime.parse(endTimeText);
-            request.setAttribute("meals", this.mealRestController.getAllByUserWithDateTimeFiltered(startTime, endTime, startDate, endDate));
-            request.getRequestDispatcher("/meals.jsp").forward(request, response);
-        } else {
-            String action = request.getParameter("action");
-            int userId = SecurityUtil.authUserId();
-            switch (action == null ? "all" : action) {
-                case "delete":
-                    int id = this.getId(request);
-                    log.info("Delete id={}", id);
-                    this.mealRestController.delete(id);
-                    response.sendRedirect("meals");
-                    break;
-                case "create":
-                case "update":
-                    final Meal meal = "create".equals(action) ?
-                            new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000, userId) :
-                            this.mealRestController.get(this.getId(request));
-                    request.setAttribute("meal", meal);
-                    request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
-                    break;
-                case "all":
-                default:
-                    log.info("getAll");
-                    request.setAttribute("meals", this.mealRestController.getAllByUser());
-                    request.getRequestDispatcher("/meals.jsp").forward(request, response);
-                    break;
-            }
+        String action = request.getParameter("action");
+        int userId = SecurityUtil.authUserId();
+        switch (action == null ? "all" : action) {
+            case "delete":
+                int id = this.getId(request);
+                log.info("Delete id={}", id);
+                this.mealRestController.delete(id);
+                response.sendRedirect("meals");
+                break;
+            case "create":
+            case "update":
+                final Meal meal = "create".equals(action) ?
+                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000, userId) :
+                        this.mealRestController.get(this.getId(request));
+                request.setAttribute("meal", meal);
+                request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
+                break;
+            case "filter":
+                String startDateText = request.getParameter("startDate");
+                String startTimeText = request.getParameter("startTime");
+                String endDateText = request.getParameter("endDate");
+                String endTimeText = request.getParameter("endTime");
+                request.setAttribute("meals", this.mealRestController.getAllByUserWithDateTimeFiltered(startTimeText, endTimeText, startDateText, endDateText));
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                break;
+            case "all":
+            default:
+                log.info("getAll");
+                request.setAttribute("meals", this.mealRestController.getAllByUser());
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                break;
         }
     }
 
