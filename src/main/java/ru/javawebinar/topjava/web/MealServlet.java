@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.util.ObjectUtils;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
@@ -36,19 +37,17 @@ public class MealServlet extends HttpServlet {
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")),
-                null);
+                Integer.parseInt(request.getParameter("calories")));
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
         if (meal.isNew())
             this.mealRestController.create(meal);
-        else this.mealRestController.update(meal);
+        else this.mealRestController.update(meal, SecurityUtil.authUserId());
         response.sendRedirect("meals");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        int userId = SecurityUtil.authUserId();
         switch (action == null ? "all" : action) {
             case "delete":
                 int id = this.getId(request);
@@ -59,7 +58,7 @@ public class MealServlet extends HttpServlet {
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
-                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000, userId) :
+                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
                         this.mealRestController.get(this.getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
@@ -69,13 +68,17 @@ public class MealServlet extends HttpServlet {
                 String startTimeText = request.getParameter("startTime");
                 String endDateText = request.getParameter("endDate");
                 String endTimeText = request.getParameter("endTime");
-                request.setAttribute("meals", this.mealRestController.getAllByUserWithDateTimeFiltered(startTimeText, endTimeText, startDateText, endDateText));
+                LocalDate startDate = ObjectUtils.isEmpty(startDateText) ? null : LocalDate.parse(startDateText);
+                LocalDate endDate = ObjectUtils.isEmpty(endDateText) ? null : LocalDate.parse(endDateText);
+                LocalTime startTime = ObjectUtils.isEmpty(startTimeText) ? null : LocalTime.parse(startTimeText);
+                LocalTime endTime = ObjectUtils.isEmpty(endTimeText) ? null : LocalTime.parse(endTimeText);
+                request.setAttribute("meals", this.mealRestController.getAll(startDate, startTime, endTime, endDate));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "all":
             default:
                 log.info("getAll");
-                request.setAttribute("meals", this.mealRestController.getAllByUser());
+                request.setAttribute("meals", this.mealRestController.getAll());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }

@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
+import ru.javawebinar.topjava.util.UserSampleData;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,13 +22,13 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int user = Integer.parseInt(request.getParameter("user"));
-        log.debug("SecurityUtil userId: {}", user);
-        if (user == 1)
-            SecurityUtil.setUser1();
-        else if (user == 2)
-            SecurityUtil.setUser2();
-        else log.error("такого пользователя нет!");
-        response.sendRedirect("meals");
+        int userId = Integer.parseInt(request.getParameter("userId"));
+        log.debug("SecurityUtil userId: {}", userId);
+        if (!UserSampleData.SAMPLE_USERS.contains(userId))
+            log.error("такого пользователя нет!");
+        else {
+            SecurityUtil.setUser(userId);
+            response.sendRedirect("meals");
+        }
     }
 }

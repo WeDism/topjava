@@ -3,11 +3,12 @@ package ru.javawebinar.topjava.service;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.ValidationUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Collection;
+import java.util.List;
 
 @Service
 public class MealService {
@@ -29,14 +30,14 @@ public class MealService {
         return ValidationUtil.checkNotFoundWithId(this.mealRepository.get(id, userId), id);
     }
 
-    public Collection<Meal> getAllByUser(int userId) {
-        return this.mealRepository.getAllByUser(userId);
+    public List<Meal> getAll(int userId) {
+        return this.mealRepository.getAll(userId);
     }
 
-    public Collection<Meal> getAllByUserWithFilter(int userId,
-                                                   LocalTime startTime, LocalTime endTime,
-                                                   LocalDate startDate, LocalDate endDate) {
-        return this.mealRepository.getAllByUserWithFilter(userId, startTime, endTime, startDate, endDate);
+    public List<MealTo> getAll(int userId,
+                               LocalTime startTime, LocalTime endTime,
+                               LocalDate startDate, LocalDate endDate, int caloriesPerDay) {
+        return this.mealRepository.getAll(userId, startTime, endTime, startDate, endDate, caloriesPerDay);
     }
 
     public void update(Meal meal, int userId) {
