@@ -7,13 +7,14 @@ import org.springframework.util.ObjectUtils;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.MealsFiltrationService;
+import ru.javawebinar.topjava.util.MealConverter;
 import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class MealRestController {
@@ -51,19 +52,18 @@ public class MealRestController {
     public List<MealTo> getAll() {
         int userId = SecurityUtil.authUserId();
         log.info("getAllByUser {}", userId);
-        return MealsFiltrationService.getTos(this.mealService.getAll(userId), SecurityUtil.authUserCaloriesPerDay());
+        return MealConverter.toTos(this.mealService.getAll(userId), SecurityUtil.authUserCaloriesPerDay());
     }
 
-    public List<MealTo> getAll(LocalDate startDate, LocalTime endTime, LocalTime startTime, LocalDate endDate) {
+    public List<MealTo> getAllBySorted(LocalTime startTime, LocalTime endTime, LocalDate startDate, LocalDate endDate) {
         int userId = SecurityUtil.authUserId();
         log.info("getAllByUser {}", userId);
         LocalTime startTimeComputed = ObjectUtils.isEmpty(startTime) ? LocalTime.MIN : startTime;
         LocalTime endTimeComputed = ObjectUtils.isEmpty(endTime) ? LocalTime.MAX : endTime;
         LocalDate startDateComputed = ObjectUtils.isEmpty(startDate) ? LocalDate.MIN : startDate;
         LocalDate endDateComputed = ObjectUtils.isEmpty(endDate) ? LocalDate.MAX : endDate;
-        List<Meal> userMeals = this.mealService.getAll(userId);
-        return MealsFiltrationService.getFilteredTos(userMeals, SecurityUtil.authUserCaloriesPerDay(),
-                startTimeComputed, endTimeComputed,
-                startDateComputed, endDateComputed);
+        return this.mealService
+                .getAllBySorted(userId, startTimeComputed, endTimeComputed, startDateComputed, endDateComputed, SecurityUtil.authUserCaloriesPerDay())
+                .stream().map(MealConverter::createTo).collect(Collectors.toList());
     }
 }

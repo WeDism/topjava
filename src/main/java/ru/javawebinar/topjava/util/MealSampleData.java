@@ -7,9 +7,12 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 
-public interface MealSampleData {
-    int DEFAULT_CALORIES_PER_DAY = 2000;
-    List<Meal> meals1 = Arrays.asList(
+public final class MealSampleData {
+    private MealSampleData() {
+    }
+
+    public static int DEFAULT_CALORIES_PER_DAY = 2000;
+    public static List<Meal> meals1 = Arrays.asList(
             new Meal(LocalDateTime.of(2021, Month.JANUARY, 30, 10, 0), "Завтрак", 500),
             new Meal(LocalDateTime.of(2021, Month.JANUARY, 30, 13, 0), "Обед", 1000),
             new Meal(LocalDateTime.of(2021, Month.JANUARY, 30, 20, 0), "Ужин", 500),
@@ -18,7 +21,7 @@ public interface MealSampleData {
             new Meal(LocalDateTime.of(2021, Month.JANUARY, 31, 13, 0), "Обед", 500),
             new Meal(LocalDateTime.of(2021, Month.JANUARY, 31, 20, 0), "Ужин", 410)
     );
-    List<Meal> meals2 = Arrays.asList(
+    public static List<Meal> meals2 = Arrays.asList(
             new Meal(LocalDateTime.of(2022, Month.JANUARY, 30, 10, 0), "Завтрак", 500),
             new Meal(LocalDateTime.of(2022, Month.JANUARY, 30, 13, 0), "Обед", 1000),
             new Meal(LocalDateTime.of(2022, Month.JANUARY, 30, 20, 0), "Ужин", 500),
