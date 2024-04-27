@@ -14,7 +14,6 @@ import ru.javawebinar.topjava.web.SecurityUtil;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 public class MealRestController {
@@ -55,15 +54,14 @@ public class MealRestController {
         return MealConverter.toTos(this.mealService.getAll(userId), SecurityUtil.authUserCaloriesPerDay());
     }
 
-    public List<MealTo> getAllBySorted(LocalTime startTime, LocalTime endTime, LocalDate startDate, LocalDate endDate) {
+    public List<MealTo> getAllByFilter(LocalTime startTime, LocalTime endTime, LocalDate startDate, LocalDate endDate) {
         int userId = SecurityUtil.authUserId();
         log.info("getAllByUser {}", userId);
         LocalTime startTimeComputed = ObjectUtils.isEmpty(startTime) ? LocalTime.MIN : startTime;
         LocalTime endTimeComputed = ObjectUtils.isEmpty(endTime) ? LocalTime.MAX : endTime;
         LocalDate startDateComputed = ObjectUtils.isEmpty(startDate) ? LocalDate.MIN : startDate;
         LocalDate endDateComputed = ObjectUtils.isEmpty(endDate) ? LocalDate.MAX : endDate;
-        return this.mealService
-                .getAllBySorted(userId, startTimeComputed, endTimeComputed, startDateComputed, endDateComputed, SecurityUtil.authUserCaloriesPerDay())
-                .stream().map(MealConverter::createTo).collect(Collectors.toList());
+        return MealConverter.toTos(this.mealService.getAllByFilter(userId, startDateComputed, endDateComputed),
+                startTimeComputed, endTimeComputed, SecurityUtil.authUserCaloriesPerDay());
     }
 }

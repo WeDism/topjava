@@ -6,7 +6,6 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.ValidationUtil;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -18,8 +17,7 @@ public class MealService {
     }
 
     public Meal create(Meal meal, int userId) {
-        Meal saved = this.mealRepository.save(meal, userId);
-        return ValidationUtil.checkNotFoundWithId(saved, saved.getId());
+        return this.mealRepository.save(meal, userId);
     }
 
     public void delete(int id, int userId) {
@@ -34,10 +32,8 @@ public class MealService {
         return this.mealRepository.getAll(userId);
     }
 
-    public List<Meal> getAllBySorted(int userId,
-                                     LocalTime startTime, LocalTime endTime,
-                                     LocalDate startDate, LocalDate endDate, int caloriesPerDay) {
-        return this.mealRepository.getAllFilteredEntity(userId, startTime, endTime, startDate, endDate, caloriesPerDay);
+    public List<Meal> getAllByFilter(int userId, LocalDate startDate, LocalDate endDate) {
+        return this.mealRepository.getAllFilteredEntity(userId, startDate, endDate);
     }
 
     public void update(Meal meal, int userId) {

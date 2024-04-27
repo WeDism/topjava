@@ -3,14 +3,14 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.MealComparator;
 import ru.javawebinar.topjava.util.MealSampleData;
 import ru.javawebinar.topjava.util.MealsFiltrationHandler;
 import ru.javawebinar.topjava.util.UserSampleData;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,7 +40,9 @@ public class InMemoryMealRepository implements MealRepository {
         }
         // handle case: update, but not present in storage
         Map<Integer, Meal> userMeals = this.repository.computeIfAbsent(userId, k -> new ConcurrentHashMap<>());
-        userMeals.replace(meal.getId(), meal);
+        Meal oldMeal = userMeals.replace(meal.getId(), meal);
+        if (oldMeal == null)
+            throw new NotFoundException("Указанная еда отсутствует у данного пользователя");
         return meal;
     }
 
@@ -61,19 +63,18 @@ public class InMemoryMealRepository implements MealRepository {
         Map<Integer, Meal> userMeals = this.repository.get(userId);
         return userMeals != null
                 ? userMeals.values().stream()
-                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+                .sorted(MealComparator.MEAL_COMPARATOR)
                 .collect(Collectors.toList())
                 : Collections.emptyList();
     }
 
     @Override
-    public List<Meal> getAllFilteredEntity(int userId,
-                                           LocalTime startTime, LocalTime endTime,
-                                           LocalDate startDate, LocalDate endDate, int caloriesPerDay) {
+    public List<Meal> getAllFilteredEntity(int userId, LocalDate startDate, LocalDate endDate) {
         Map<Integer, Meal> userMeals = this.repository.get(userId);
         return userMeals == null
                 ? Collections.emptyList()
-                : MealsFiltrationHandler.getFilteredEntity(userMeals.values(), caloriesPerDay, startTime, endTime, startDate, endDate);
+                : MealsFiltrationHandler.getFilteredEntity
+                (userMeals.values(), startDate, endDate, MealComparator.MEAL_COMPARATOR);
     }
 }
 

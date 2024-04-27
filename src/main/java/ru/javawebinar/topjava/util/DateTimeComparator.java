@@ -10,8 +10,8 @@ public class DateTimeComparator {
         return comparable.compareTo(moreOrEqualObject) >= 0 && comparable.compareTo(lessObject) < 0;
     }
 
-    public static <T> boolean isBetweenMoreOrEqual(Comparable<T> comparable, T moreOrEqualObject, T lessObject) {
-        return comparable.compareTo(moreOrEqualObject) >= 0 && comparable.compareTo(lessObject) <= 0;
+    public static <T> boolean isBetweenClosed(Comparable<T> comparable, T moreOrEqualObject, T lessOrEqualObject) {
+        return comparable.compareTo(moreOrEqualObject) >= 0 && comparable.compareTo(lessOrEqualObject) <= 0;
     }
 
     public static String toString(LocalDateTime ldt) {
