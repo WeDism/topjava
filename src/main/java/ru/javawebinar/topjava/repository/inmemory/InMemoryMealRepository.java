@@ -3,14 +3,13 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.MealComparator;
+import ru.javawebinar.topjava.util.DateTimeComparator;
 import ru.javawebinar.topjava.util.MealSampleData;
-import ru.javawebinar.topjava.util.MealsFiltrationHandler;
 import ru.javawebinar.topjava.util.UserSampleData;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,6 +23,7 @@ public class InMemoryMealRepository implements MealRepository {
      */
     private final Map<Integer, Map<Integer, Meal>> repository = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
+    public static final Comparator<Meal> MEAL_COMPARATOR = Comparator.comparing(Meal::getDateTime).reversed();
 
     public InMemoryMealRepository() {
         MealSampleData.meals1.forEach((meal -> this.save(meal, UserSampleData.FIRST_USER)));
@@ -41,9 +41,7 @@ public class InMemoryMealRepository implements MealRepository {
         // handle case: update, but not present in storage
         Map<Integer, Meal> userMeals = this.repository.computeIfAbsent(userId, k -> new ConcurrentHashMap<>());
         Meal oldMeal = userMeals.replace(meal.getId(), meal);
-        if (oldMeal == null)
-            throw new NotFoundException("Указанная еда отсутствует у данного пользователя");
-        return meal;
+        return oldMeal == null ? null : meal;
     }
 
     @Override
@@ -62,19 +60,18 @@ public class InMemoryMealRepository implements MealRepository {
     public List<Meal> getAll(int userId) {
         Map<Integer, Meal> userMeals = this.repository.get(userId);
         return userMeals != null
-                ? userMeals.values().stream()
-                .sorted(MealComparator.MEAL_COMPARATOR)
-                .collect(Collectors.toList())
+                ? userMeals.values().stream().sorted(InMemoryMealRepository.MEAL_COMPARATOR).collect(Collectors.toList())
                 : Collections.emptyList();
     }
 
     @Override
-    public List<Meal> getAllFilteredEntity(int userId, LocalDate startDate, LocalDate endDate) {
+    public List<Meal> getAllByFiltered(int userId, LocalDate startDate, LocalDate endDay) {
         Map<Integer, Meal> userMeals = this.repository.get(userId);
         return userMeals == null
                 ? Collections.emptyList()
-                : MealsFiltrationHandler.getFilteredEntity
-                (userMeals.values(), startDate, endDate, MealComparator.MEAL_COMPARATOR);
+                : userMeals.values().stream()
+                .filter(meal -> DateTimeComparator.isBetweenClosed(meal.getDate(), startDate, endDay))
+                .sorted(InMemoryMealRepository.MEAL_COMPARATOR).collect(Collectors.toList());
     }
 }
 

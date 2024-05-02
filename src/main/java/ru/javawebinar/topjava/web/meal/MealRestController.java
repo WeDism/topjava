@@ -50,13 +50,13 @@ public class MealRestController {
 
     public List<MealTo> getAll() {
         int userId = SecurityUtil.authUserId();
-        log.info("getAllByUser {}", userId);
+        log.info("getAll {}", userId);
         return MealConverter.toTos(this.mealService.getAll(userId), SecurityUtil.authUserCaloriesPerDay());
     }
 
     public List<MealTo> getAllByFilter(LocalTime startTime, LocalTime endTime, LocalDate startDate, LocalDate endDate) {
         int userId = SecurityUtil.authUserId();
-        log.info("getAllByUser {}", userId);
+        log.info("getAllByFilter {}", userId);
         LocalTime startTimeComputed = ObjectUtils.isEmpty(startTime) ? LocalTime.MIN : startTime;
         LocalTime endTimeComputed = ObjectUtils.isEmpty(endTime) ? LocalTime.MAX : endTime;
         LocalDate startDateComputed = ObjectUtils.isEmpty(startDate) ? LocalDate.MIN : startDate;

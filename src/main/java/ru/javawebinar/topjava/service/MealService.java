@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.ValidationUtil;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,7 +18,10 @@ public class MealService {
     }
 
     public Meal create(Meal meal, int userId) {
-        return this.mealRepository.save(meal, userId);
+        Meal newMeal = this.mealRepository.save(meal, userId);
+        if (newMeal == null)
+            throw new NotFoundException("Указанная еда отсутствует у данного пользователя");
+        return newMeal;
     }
 
     public void delete(int id, int userId) {
@@ -33,7 +37,7 @@ public class MealService {
     }
 
     public List<Meal> getAllByFilter(int userId, LocalDate startDate, LocalDate endDate) {
-        return this.mealRepository.getAllFilteredEntity(userId, startDate, endDate);
+        return this.mealRepository.getAllByFiltered(userId, startDate, endDate);
     }
 
     public void update(Meal meal, int userId) {
