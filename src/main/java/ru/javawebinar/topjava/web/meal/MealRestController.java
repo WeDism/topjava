@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.web.meal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.ObjectUtils;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
@@ -57,10 +56,10 @@ public class MealRestController {
     public List<MealTo> getAllByFilter(LocalTime startTime, LocalTime endTime, LocalDate startDate, LocalDate endDate) {
         int userId = SecurityUtil.authUserId();
         log.info("getAllByFilter {}", userId);
-        LocalTime startTimeComputed = ObjectUtils.isEmpty(startTime) ? LocalTime.MIN : startTime;
-        LocalTime endTimeComputed = ObjectUtils.isEmpty(endTime) ? LocalTime.MAX : endTime;
-        LocalDate startDateComputed = ObjectUtils.isEmpty(startDate) ? LocalDate.MIN : startDate;
-        LocalDate endDateComputed = ObjectUtils.isEmpty(endDate) ? LocalDate.MAX : endDate;
+        LocalTime startTimeComputed = startTime == null ? LocalTime.MIN : startTime;
+        LocalTime endTimeComputed = endTime == null ? LocalTime.MAX : endTime;
+        LocalDate startDateComputed = startDate == null ? LocalDate.MIN : startDate;
+        LocalDate endDateComputed = endDate == null ? LocalDate.MAX : endDate;
         return MealConverter.toTos(this.mealService.getAllByFilter(userId, startDateComputed, endDateComputed),
                 startTimeComputed, endTimeComputed, SecurityUtil.authUserCaloriesPerDay());
     }

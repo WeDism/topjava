@@ -18,10 +18,7 @@ public class MealService {
     }
 
     public Meal create(Meal meal, int userId) {
-        Meal newMeal = this.mealRepository.save(meal, userId);
-        if (newMeal == null)
-            throw new NotFoundException("Указанная еда отсутствует у данного пользователя");
-        return newMeal;
+        return this.mealRepository.save(meal, userId);
     }
 
     public void delete(int id, int userId) {
@@ -37,10 +34,13 @@ public class MealService {
     }
 
     public List<Meal> getAllByFilter(int userId, LocalDate startDate, LocalDate endDate) {
-        return this.mealRepository.getAllByFiltered(userId, startDate, endDate);
+        return this.mealRepository.getAllByFilter(userId, startDate, endDate);
     }
 
     public void update(Meal meal, int userId) {
-        ValidationUtil.checkNotFoundWithId(this.mealRepository.save(meal, userId), userId);
+        Meal updated = this.mealRepository.save(meal, userId);
+        if (updated == null)
+            throw new NotFoundException("Указанная еда отсутствует у данного пользователя");
+        ValidationUtil.checkNotFoundWithId(updated, userId);
     }
 }
