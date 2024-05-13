@@ -39,8 +39,6 @@ public class MealService {
 
     public void update(Meal meal, int userId) {
         Meal updated = this.mealRepository.save(meal, userId);
-        if (updated == null)
-            throw new NotFoundException("Указанная еда отсутствует у данного пользователя");
-        ValidationUtil.checkNotFoundWithId(updated, userId);
+        ValidationUtil.checkNotFoundWithId(updated, meal.getId());
     }
 }
