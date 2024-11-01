@@ -3,15 +3,12 @@ package ru.javawebinar.topjava.service;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.util.ValidationUtil;
 
 import java.util.List;
 
-import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
-import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
-
 @Service
 public class UserService {
-
     private final UserRepository repository;
 
     public UserService(UserRepository repository) {
@@ -23,15 +20,15 @@ public class UserService {
     }
 
     public void delete(int id) {
-        checkNotFoundWithId(repository.delete(id), id);
+        ValidationUtil.checkNotFoundWithId(repository.delete(id), id);
     }
 
     public User get(int id) {
-        return checkNotFoundWithId(repository.get(id), id);
+        return ValidationUtil.checkNotFoundWithId(repository.get(id), id);
     }
 
     public User getByEmail(String email) {
-        return checkNotFound(repository.getByEmail(email), "email=" + email);
+        return ValidationUtil.checkNotFound(repository.getByEmail(email), "email=" + email);
     }
 
     public List<User> getAll() {
@@ -39,6 +36,6 @@ public class UserService {
     }
 
     public void update(User user) {
-        checkNotFoundWithId(repository.save(user), user.getId());
+        ValidationUtil.checkNotFoundWithId(repository.save(user), user.getId());
     }
 }
