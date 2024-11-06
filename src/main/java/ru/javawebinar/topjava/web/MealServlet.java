@@ -44,19 +44,15 @@ public class MealServlet extends HttpServlet {
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
-
         if (StringUtils.hasLength(request.getParameter("id"))) {
             mealController.update(meal, getId(request));
-        } else {
-            mealController.create(meal);
-        }
+        } else mealController.create(meal);
         response.sendRedirect("meals");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-
         switch (action == null ? "all" : action) {
             case "delete":
                 int id = getId(request);

@@ -7,15 +7,14 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
-
 public class MealTestData {
-    public static final int MEAL_ID_BREAKFAST_1_USER = START_SEQ + 100;
-    public static final int MEAL_ID_LUNCH_1_USER = START_SEQ + 100 + 1;
-    public static final int MEAL_ID_SNACK_1_USER = START_SEQ + 100 + 2;
-    public static final int MEAL_ID_DINNER_1_USER = START_SEQ + 100 + 3;
-    public static final int MEAL_ID_BREAKFAST_ADMIN = START_SEQ + 100 + 4;
-    public static final int MEAL_ID_LUNCH_2_USER = START_SEQ + 100 + 5;
+    public static final int MEAL_ID_BREAKFAST_1_USER = UserTestData.END_USER_SEQ;
+    public static final int MEAL_ID_LUNCH_1_USER = UserTestData.END_USER_SEQ + 1;
+    public static final int MEAL_ID_SNACK_1_USER = UserTestData.END_USER_SEQ + 2;
+    public static final int MEAL_ID_DINNER_1_USER = UserTestData.END_USER_SEQ + 3;
+    public static final int MEAL_ID_BREAKFAST_ADMIN = UserTestData.END_USER_SEQ + 4;
+    public static final int MEAL_ID_LUNCH_2_USER = UserTestData.END_USER_SEQ + 5;
+    public static final int MEAL_ID_NOT_EXISTING = UserTestData.END_USER_SEQ *2;
 
     public static final Meal breakfast1User = new Meal(MealTestData.MEAL_ID_BREAKFAST_1_USER,
             LocalDateTime.of(2024, 11, 1, 8, 0), "завтрак", 300);
@@ -35,7 +34,7 @@ public class MealTestData {
             Arrays.asList(MealTestData.breakfast1User, MealTestData.lunch1User, MealTestData.snack1User, MealTestData.dinner1User, MealTestData.lunch2User);
 
     public static Meal getNew() {
-        return new Meal(LocalDateTime.now(), "Еда", 500);
+        return new Meal(LocalDateTime.of(2024, 11, 3, 14, 14), "Еда", 500);
     }
 
     public static Meal getUpdated() {
@@ -55,7 +54,7 @@ public class MealTestData {
     }
 
     public static void assertMatch(Meal actual, Meal expected) {
-        Assertions.assertThat(actual).usingRecursiveComparison().ignoringFields("dateTime").isEqualTo(expected);
+        Assertions.assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
     public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {

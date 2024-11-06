@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,6 +13,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 @Repository
@@ -41,10 +43,17 @@ public class JdbcMealRepository implements MealRepository {
         if (meal.isNew()) {
             Number newKey = insertNeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
-        } else if (namedParameterJdbcTemplate.update(
-                "UPDATE meals SET date_time=:date_time, description=:description, " +
-                        "calories=:calories, user_id=:user_id WHERE id=:id", map) == 0) {
-            return null;
+        } else {
+            if (Boolean.FALSE.equals(namedParameterJdbcTemplate.queryForObject(
+                    "SELECT EXISTS (SELECT * FROM meals WHERE id=:meal_id and user_id =:user_id)", new MapSqlParameterSource(new HashMap<String, Object>() {{
+                        put("meal_id", meal.getId());
+                        put("user_id", userId);
+                    }}), Boolean.class)))
+                throw new DuplicateKeyException("Вы не можете изменять редактировать чужую еду");
+            if (namedParameterJdbcTemplate.update(
+                    "UPDATE meals SET date_time=:date_time, description=:description, " +
+                            "calories=:calories, user_id=:user_id WHERE id=:id", map) == 0)
+                return null;
         }
         return meal;
     }

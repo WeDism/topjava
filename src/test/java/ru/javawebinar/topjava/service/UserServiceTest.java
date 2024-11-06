@@ -22,7 +22,7 @@ import java.util.List;
         "classpath:spring/spring-db.xml"
 })
 @RunWith(SpringRunner.class)
-@Sql(scripts = {"classpath:db/initDB.sql", "classpath:db/populateDB.sql"}, config = @SqlConfig(encoding = "UTF-8"))
+@Sql(scripts = {"classpath:db/populateDB.sql"}, config = @SqlConfig(encoding = "UTF-8"))
 public class UserServiceTest {
     static {
         // Only for postgres driver logging
@@ -61,9 +61,9 @@ public class UserServiceTest {
     }
 
     @Test
-    public void get() {        User user = this.service.get(UserTestData.USER_ID);
+    public void get() {
+        User user = this.service.get(UserTestData.USER_ID);
         UserTestData.assertMatch(user, UserTestData.user);
-
     }
 
     @Test

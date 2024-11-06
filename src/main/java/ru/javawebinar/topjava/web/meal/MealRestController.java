@@ -15,8 +15,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
-
 @Controller
 public class MealRestController {
     private static final Logger log = LoggerFactory.getLogger(MealRestController.class);
@@ -46,7 +44,7 @@ public class MealRestController {
 
     public Meal create(Meal meal) {
         int userId = SecurityUtil.authUserId();
-        checkNew(meal);
+        ValidationUtil.checkNew(meal);
         log.info("create {} for user {}", meal, userId);
         return service.create(meal, userId);
     }
@@ -64,8 +62,7 @@ public class MealRestController {
      * <li>by time for every date</li>
      * </ol>
      */
-    public List<MealTo> getBetween(@Nullable LocalDate startDate, @Nullable LocalTime startTime,
-                                   @Nullable LocalDate endDate, @Nullable LocalTime endTime) {
+    public List<MealTo> getBetween(@Nullable LocalDate startDate, @Nullable LocalTime startTime, @Nullable LocalDate endDate, @Nullable LocalTime endTime) {
         int userId = SecurityUtil.authUserId();
         log.info("getBetween dates({} - {}) time({} - {}) for user {}", startDate, endDate, startTime, endTime, userId);
         List<Meal> mealsDateFiltered = service.getBetweenInclusive(startDate, endDate, userId);

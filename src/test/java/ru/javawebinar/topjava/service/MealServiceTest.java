@@ -23,7 +23,7 @@ import java.util.List;
         "classpath:spring/spring-db.xml"
 })
 @RunWith(SpringRunner.class)
-@Sql(scripts = {"classpath:db/initDB.sql", "classpath:db/populateDB.sql"}, config = @SqlConfig(encoding = "UTF-8"))
+@Sql(scripts = {"classpath:db/populateDB.sql"}, config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
     static {
         // Only for postgres driver logging
@@ -35,30 +35,39 @@ public class MealServiceTest {
     private MealService service;
 
     @Test
-    public void testGet() {
+    public void get() {
         Meal meal = this.service.get(MealTestData.MEAL_ID_BREAKFAST_1_USER, UserTestData.USER_ID);
         MealTestData.assertMatch(meal, MealTestData.breakfast1User);
     }
 
     @Test
-    public void testForeignGet() {
+    public void getNotExisting() {
+        Assert.assertThrows(NotFoundException.class, () -> this.service.get(MealTestData.MEAL_ID_NOT_EXISTING, UserTestData.USER_ID));
+    }
+
+    @Test
+    public void foreignGet() {
         Assert.assertThrows(NotFoundException.class, () -> this.service.get(MealTestData.MEAL_ID_BREAKFAST_1_USER, UserTestData.ADMIN_ID));
     }
 
     @Test
-    public void testDelete() {
+    public void delete() {
         this.service.delete(MealTestData.MEAL_ID_BREAKFAST_1_USER, UserTestData.USER_ID);
         Assert.assertThrows(NotFoundException.class, () -> this.service.get(MealTestData.MEAL_ID_BREAKFAST_1_USER, UserTestData.USER_ID));
     }
 
     @Test
-    public void testForeignDelete() {
-        this.service.delete(MealTestData.MEAL_ID_BREAKFAST_1_USER, UserTestData.USER_ID);
-        Assert.assertThrows(NotFoundException.class, () -> this.service.delete(MealTestData.MEAL_ID_BREAKFAST_1_USER, UserTestData.USER_ID));
+    public void foreignDelete() {
+        Assert.assertThrows(NotFoundException.class, () -> this.service.delete(MealTestData.MEAL_ID_BREAKFAST_1_USER, UserTestData.ADMIN_ID));
     }
 
     @Test
-    public void testGetBetweenInclusive() {
+    public void deleteNotExisting() {
+        Assert.assertThrows(NotFoundException.class, () -> this.service.delete(MealTestData.MEAL_ID_NOT_EXISTING, UserTestData.USER_ID));
+    }
+
+    @Test
+    public void getBetweenInclusive() {
         LocalDate startDate = LocalDate.of(2024, 11, 1);
         LocalDate endDate = LocalDate.of(2024, 11, 1);
         List<Meal> betweenInclusive = this.service.getBetweenInclusive(startDate, endDate, UserTestData.USER_ID);
@@ -66,20 +75,34 @@ public class MealServiceTest {
     }
 
     @Test
-    public void testGetAll() {
+    public void getBetweenInclusiveWithEmptyBorders() {
+        List<Meal> betweenInclusive = this.service.getBetweenInclusive(null, null, UserTestData.USER_ID);
+        MealTestData.assertMatch(betweenInclusive, MealTestData.mealsUserAllDay);
+    }
+
+    @Test
+    public void getAll() {
         List<Meal> all = this.service.getAll(UserTestData.USER_ID);
         MealTestData.assertMatch(all, MealTestData.mealsUserAllDay);
     }
 
     @Test
-    public void testUpdate() {
+    public void update() {
         Meal updated = MealTestData.getUpdated();
         this.service.update(updated, UserTestData.USER_ID);
         MealTestData.assertMatch(this.service.get(MealTestData.MEAL_ID_LUNCH_2_USER, UserTestData.USER_ID), MealTestData.getUpdated());
     }
 
     @Test
-    public void testForeignUpdate() {
+    public void foreignUpdate() {
+        Assert.assertThrows(DuplicateKeyException.class, () -> {
+            Meal updated = MealTestData.getUpdated();
+            this.service.update(updated, UserTestData.ADMIN_ID);
+        });
+    }
+
+    @Test
+    public void duplicateDataUpdate() {
         Assert.assertThrows(DuplicateKeyException.class, () -> {
             Meal updated = MealTestData.getUpdated();
             this.service.update(updated, UserTestData.USER_ID);
@@ -89,12 +112,20 @@ public class MealServiceTest {
     }
 
     @Test
-    public void testCreate() {
+    public void create() {
         Meal created = this.service.create(MealTestData.getNew(), UserTestData.USER_ID);
         Integer newId = created.getId();
         Meal newMeal = MealTestData.getNew();
         newMeal.setId(newId);
         MealTestData.assertMatch(created, newMeal);
         MealTestData.assertMatch(this.service.get(newId, UserTestData.USER_ID), newMeal);
+    }
+
+    @Test
+    public void duplicateDateTimeCreate() {
+        Assert.assertThrows(DuplicateKeyException.class, () -> {
+            this.service.create(MealTestData.getNew(), UserTestData.USER_ID);
+            this.service.create(MealTestData.getNew(), UserTestData.USER_ID);
+        });
     }
 }
