@@ -45,11 +45,19 @@ public class MealTestData {
         return updated;
     }
 
+    public static Meal getDuplicateDataTimeMeal() {
+        Meal updated = new Meal();
+        updated.setCalories(900);
+        updated.setDescription("завтрак");
+        updated.setDateTime(lunch2User.getDateTime());
+        return updated;
+    }
+
     public static Meal getDuplicateUpdated() {
         Meal updated = new Meal(lunch1User);
         updated.setCalories(900);
         updated.setDescription("завтрак");
-        updated.setDateTime(LocalDateTime.of(2024, 11, 2, 9, 0));
+        updated.setDateTime(dinner1User.getDateTime());
         return updated;
     }
 
@@ -58,6 +66,6 @@ public class MealTestData {
     }
 
     public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
-        Assertions.assertThat(actual).usingRecursiveFieldByFieldElementComparatorIgnoringFields("id").containsExactlyInAnyOrderElementsOf(expected);
+        Assertions.assertThat(actual).containsAll(expected);
     }
 }

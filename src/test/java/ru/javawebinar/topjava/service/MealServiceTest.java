@@ -95,7 +95,7 @@ public class MealServiceTest {
 
     @Test
     public void foreignUpdate() {
-        Assert.assertThrows(DuplicateKeyException.class, () -> {
+        Assert.assertThrows(NotFoundException.class, () -> {
             Meal updated = MealTestData.getUpdated();
             this.service.update(updated, UserTestData.ADMIN_ID);
         });
@@ -104,10 +104,7 @@ public class MealServiceTest {
     @Test
     public void duplicateDataUpdate() {
         Assert.assertThrows(DuplicateKeyException.class, () -> {
-            Meal updated = MealTestData.getUpdated();
-            this.service.update(updated, UserTestData.USER_ID);
-            updated = MealTestData.getDuplicateUpdated();
-            this.service.update(updated, UserTestData.USER_ID);
+            this.service.update(MealTestData.getDuplicateUpdated(), UserTestData.USER_ID);
         });
     }
 
@@ -124,8 +121,7 @@ public class MealServiceTest {
     @Test
     public void duplicateDateTimeCreate() {
         Assert.assertThrows(DuplicateKeyException.class, () -> {
-            this.service.create(MealTestData.getNew(), UserTestData.USER_ID);
-            this.service.create(MealTestData.getNew(), UserTestData.USER_ID);
+            this.service.create(MealTestData.getDuplicateDataTimeMeal(), UserTestData.USER_ID);
         });
     }
 }

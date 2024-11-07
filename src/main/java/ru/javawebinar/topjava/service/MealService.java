@@ -39,6 +39,10 @@ public class MealService {
     }
 
     public Meal create(Meal meal, int userId) {
-        return repository.save(meal, userId);
+        if (meal.isNew())
+            return repository.save(meal, userId);
+        else if (!meal.isNew() && this.get(meal.getId(), userId) != null)
+            return repository.save(meal, userId);
+        else return null;
     }
 }
