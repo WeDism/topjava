@@ -37,12 +37,7 @@ public class MealService {
     public void update(Meal meal, int userId) {
         ValidationUtil.checkNotFoundWithId(repository.save(meal, userId), meal.getId());
     }
-
     public Meal create(Meal meal, int userId) {
-        if (meal.isNew())
-            return repository.save(meal, userId);
-        else if (!meal.isNew() && this.get(meal.getId(), userId) != null)
-            return repository.save(meal, userId);
-        else return null;
+        return repository.save(meal, userId);
     }
 }

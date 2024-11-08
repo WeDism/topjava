@@ -5,7 +5,10 @@ import ru.javawebinar.topjava.model.Meal;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MealTestData {
     public static final int MEAL_ID_BREAKFAST_1_USER = UserTestData.END_USER_SEQ;
@@ -14,7 +17,7 @@ public class MealTestData {
     public static final int MEAL_ID_DINNER_1_USER = UserTestData.END_USER_SEQ + 3;
     public static final int MEAL_ID_BREAKFAST_ADMIN = UserTestData.END_USER_SEQ + 4;
     public static final int MEAL_ID_LUNCH_2_USER = UserTestData.END_USER_SEQ + 5;
-    public static final int MEAL_ID_NOT_EXISTING = UserTestData.END_USER_SEQ *2;
+    public static final int MEAL_ID_NOT_EXISTING = UserTestData.END_USER_SEQ * 2;
 
     public static final Meal breakfast1User = new Meal(MealTestData.MEAL_ID_BREAKFAST_1_USER,
             LocalDateTime.of(2024, 11, 1, 8, 0), "завтрак", 300);
@@ -29,9 +32,13 @@ public class MealTestData {
     public static final Meal lunch2User = new Meal(MealTestData.MEAL_ID_LUNCH_2_USER,
             LocalDateTime.of(2024, 11, 2, 17, 0), "обед", 1500);
     public static final List<Meal> mealsUserFirstDay =
-            Arrays.asList(MealTestData.breakfast1User, MealTestData.lunch1User, MealTestData.snack1User, MealTestData.dinner1User);
+            Stream.of(MealTestData.breakfast1User, MealTestData.lunch1User, MealTestData.snack1User, MealTestData.dinner1User)
+                    .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+                    .collect(Collectors.toList());
     public static final List<Meal> mealsUserAllDay =
-            Arrays.asList(MealTestData.breakfast1User, MealTestData.lunch1User, MealTestData.snack1User, MealTestData.dinner1User, MealTestData.lunch2User);
+            Stream.of(MealTestData.breakfast1User, MealTestData.lunch1User, MealTestData.snack1User, MealTestData.dinner1User, MealTestData.lunch2User)
+                    .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+                    .collect(Collectors.toList());
 
     public static Meal getNew() {
         return new Meal(LocalDateTime.of(2024, 11, 3, 14, 14), "Еда", 500);
@@ -66,6 +73,6 @@ public class MealTestData {
     }
 
     public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
-        Assertions.assertThat(actual).containsAll(expected);
+        Assertions.assertThat(actual).usingRecursiveFieldByFieldElementComparator().isEqualTo(expected);
     }
 }

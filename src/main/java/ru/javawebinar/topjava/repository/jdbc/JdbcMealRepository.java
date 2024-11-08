@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,7 +42,9 @@ public class JdbcMealRepository implements MealRepository {
         if (meal.isNew()) {
             Number newKey = insertNeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
-        } else if (namedParameterJdbcTemplate.update(
+        } else if (this.get(meal.getId(), userId) == null)
+            throw new NotFoundException("Выбранная еда отсутствует у данного пользователя");
+        else if (namedParameterJdbcTemplate.update(
                 "UPDATE meals SET date_time=:date_time, description=:description, " +
                         "calories=:calories WHERE id=:id AND user_id=:user_id", map) == 0)
             return null;
