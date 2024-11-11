@@ -43,7 +43,7 @@ public class JdbcMealRepository implements MealRepository {
             Number newKey = insertNeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
         } else if (this.get(meal.getId(), userId) == null)
-            throw new NotFoundException("Выбранная еда отсутствует у данного пользователя");
+            return null;
         else if (namedParameterJdbcTemplate.update(
                 "UPDATE meals SET date_time=:date_time, description=:description, " +
                         "calories=:calories WHERE id=:id AND user_id=:user_id", map) == 0)

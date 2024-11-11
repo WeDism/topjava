@@ -6,6 +6,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.ValidationUtil;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,8 +36,10 @@ public class MealService {
     }
 
     public void update(Meal meal, int userId) {
-        ValidationUtil.checkNotFoundWithId(repository.save(meal, userId), meal.getId());
+        if (ValidationUtil.checkNotFoundWithId(repository.save(meal, userId), meal.getId()) == null)
+            throw new NotFoundException("Выбранная еда отсутствует у данного пользователя");
     }
+
     public Meal create(Meal meal, int userId) {
         return repository.save(meal, userId);
     }
