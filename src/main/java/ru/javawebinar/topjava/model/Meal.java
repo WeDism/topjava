@@ -1,17 +1,42 @@
 package ru.javawebinar.topjava.model;
 
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import org.hibernate.validator.constraints.Range;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class Meal extends AbstractBaseEntity {
+@NamedQueries({
+        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id and m.user.id=:user_id"),
+        @NamedQuery(name = Meal.BY_USER_SORTED,
+                query = "SELECT m FROM Meal m WHERE m.id=?1 AND m.user.id=?2 ORDER BY m.dateTime DESC"),
+        @NamedQuery(name = Meal.BY_BETWEEN_HALF_OPEN,
+                query = "SELECT m FROM Meal m WHERE m.user.id=?1 and m.dateTime>=?2 and m.dateTime<?3 ORDER BY m.dateTime DESC"),
+        @NamedQuery(name = Meal.BY_ALL_SORTED,
+                query = "SELECT m FROM Meal m WHERE m.user.id=?1 ORDER BY m.dateTime DESC"),
+})
+@Entity
+@Table(name = "meal", indexes =
+        {@Index(name = "meal_unique_user_datetime_idx", columnList = "user_id, date_time", unique = true)})
+public class
+Meal extends AbstractBaseEntity {
+    public static final String DELETE = "Meal.delete";
+    public static final String BY_BETWEEN_HALF_OPEN = "Meal.getByBetweenHalfOpen";
+    public static final String BY_USER_SORTED = "Meal.getByUserSorted";
+    public static final String BY_ALL_SORTED = "Meal.getAllSorted";
+    @Column(name = "date_time", nullable = false)
     private LocalDateTime dateTime;
+    @NotBlank
+    @Column(name = "description", nullable = false)
     private String description;
+    @Range(min = 1)
+    @Column(name = "calories", nullable = false)
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Meal() {
