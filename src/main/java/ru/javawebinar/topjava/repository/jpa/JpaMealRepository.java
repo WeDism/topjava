@@ -21,15 +21,14 @@ public class JpaMealRepository implements MealRepository {
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {
-        User user = new User();
-        user.setId(userId);
+        User user = em.getReference(User.class, userId);
         meal.setUser(user);
         if (meal.isNew()) {
             em.persist(meal);
             return meal;
         } else {
             if (this.get(meal.getId(), userId) == null)
-                throw new NotFoundException("This user hasn't the meal");
+                return null;
             return em.merge(meal);
         }
     }
@@ -44,15 +43,18 @@ public class JpaMealRepository implements MealRepository {
     }
 
     @Override
+    @Transactional
     public Meal get(int id, int userId) {
-        List<Meal> meals = em.createNamedQuery(Meal.BY_USER_SORTED, Meal.class)
+        List<Meal> meals = em.createNamedQuery(Meal.BY_USER, Meal.class)
                 .setParameter(1, id)
                 .setParameter(2, userId)
                 .getResultList();
         return DataAccessUtils.singleResult(meals);
     }
 
+
     @Override
+    @Transactional
     public List<Meal> getAll(int userId) {
         return em.createNamedQuery(Meal.BY_ALL_SORTED, Meal.class)
                 .setParameter(1, userId)
@@ -60,6 +62,7 @@ public class JpaMealRepository implements MealRepository {
     }
 
     @Override
+    @Transactional
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
         return em.createNamedQuery(Meal.BY_BETWEEN_HALF_OPEN, Meal.class)
                 .setParameter(1, userId)
