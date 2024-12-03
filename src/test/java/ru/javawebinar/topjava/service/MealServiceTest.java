@@ -3,21 +3,25 @@ package ru.javawebinar.topjava.service;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.javawebinar.topjava.TopJavaClassTestWatcher;
-import ru.javawebinar.topjava.TopJavaTestWatcher;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -31,13 +35,30 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
+    private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
     @Autowired
     private MealService service;
+    private static final Map<String, Long> executionTimes = new LinkedHashMap<>();
     @Rule
-    public final TestRule testWatcher = new TopJavaTestWatcher();
+    public Stopwatch stopwatch = new Stopwatch() {
+        @Override
+        protected void finished(long nanos, Description description) {
+            MealServiceTest.executionTimes.put(description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+            log.info("Test {} took {} ms", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+        }
+    };
     @ClassRule
-    public final static TestRule classTestWatcher = new TopJavaClassTestWatcher();
-
+    public static final Stopwatch stopwatchClass = new Stopwatch() {
+        @Override
+        protected void finished(long nanos, Description description) {
+            System.out.println("\nSummary of test execution times:");
+            System.out.println("---------------------------------");
+            MealServiceTest.executionTimes.forEach((testName, duration) ->
+                    System.out.printf("%-30s: %d ms%n", testName, duration)
+            );
+            System.out.println("---------------------------------");
+        }
+    };
     @Test
     public void delete() {
         service.delete(MEAL1_ID, USER_ID);
