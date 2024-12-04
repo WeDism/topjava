@@ -13,12 +13,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
+@Transactional
 public class JpaMealRepository implements MealRepository {
     @PersistenceContext
     private EntityManager em;
 
     @Override
-    @Transactional
     public Meal save(Meal meal, int userId) {
         User user = em.getReference(User.class, userId);
         meal.setUser(user);
@@ -30,7 +30,6 @@ public class JpaMealRepository implements MealRepository {
     }
 
     @Override
-    @Transactional
     public boolean delete(int id, int userId) {
         return em.createNamedQuery(Meal.DELETE)
                 .setParameter("id", id)
@@ -58,7 +57,7 @@ public class JpaMealRepository implements MealRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
         return em.createNamedQuery(Meal.BY_BETWEEN_HALF_OPEN, Meal.class)
                 .setParameter(1, userId)

@@ -4,6 +4,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Stopwatch;
+import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -43,22 +44,25 @@ public class MealServiceTest {
     public Stopwatch stopwatch = new Stopwatch() {
         @Override
         protected void finished(long nanos, Description description) {
-            MealServiceTest.executionTimes.put(description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
-            log.info("Test {} took {} ms", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+            long millis = TimeUnit.NANOSECONDS.toMillis(nanos);
+            MealServiceTest.executionTimes.put(description.getMethodName(), millis);
+            log.info("Test {} took {} ms", description.getMethodName(), millis);
         }
     };
     @ClassRule
-    public static final Stopwatch stopwatchClass = new Stopwatch() {
+    public static final TestWatcher stopwatchClass = new TestWatcher() {
         @Override
-        protected void finished(long nanos, Description description) {
-            System.out.println("\nSummary of test execution times:");
-            System.out.println("---------------------------------");
+        protected void finished(Description description) {
+            StringBuilder stringBuilder = new StringBuilder("\nSummary of test execution times:\n");
+            stringBuilder.append("---------------------------------\n");
             MealServiceTest.executionTimes.forEach((testName, duration) ->
-                    System.out.printf("%-30s: %d ms%n", testName, duration)
+                    stringBuilder.append(String.format("%-30s: %d ms%n", testName, duration))
             );
-            System.out.println("---------------------------------");
+            stringBuilder.append("---------------------------------\n");
+            log.info(stringBuilder.toString());
         }
     };
+
     @Test
     public void delete() {
         service.delete(MEAL1_ID, USER_ID);
