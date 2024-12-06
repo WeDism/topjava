@@ -53,13 +53,13 @@ public class MealServiceTest {
     public static final TestWatcher stopwatchClass = new TestWatcher() {
         @Override
         protected void finished(Description description) {
-            StringBuilder stringBuilder = new StringBuilder("\nSummary of test execution times:\n");
-            stringBuilder.append("---------------------------------\n");
+            StringBuilder testFinishedLog = new StringBuilder("\nSummary of test execution times:\n");
+            testFinishedLog.append("---------------------------------\n");
             MealServiceTest.executionTimes.forEach((testName, duration) ->
-                    stringBuilder.append(String.format("%-30s: %d ms%n", testName, duration))
+                    testFinishedLog.append(String.format("%-30s: %d ms%n", testName, duration))
             );
-            stringBuilder.append("---------------------------------\n");
-            log.info(stringBuilder.toString());
+            testFinishedLog.append("---------------------------------\n");
+            log.info(testFinishedLog.toString());
         }
     };
 
