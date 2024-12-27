@@ -21,12 +21,12 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 
 public class MealServlet extends HttpServlet {
-
     private ConfigurableApplicationContext springContext;
     private MealRestController mealController;
 
     @Override
     public void init() {
+        System.setProperty("spring.profiles.active", "hsqldb,datajpa");
         springContext = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-db.xml");
         mealController = springContext.getBean(MealRestController.class);
     }

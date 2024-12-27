@@ -180,6 +180,7 @@
         </dependency>
     </dependencies>
 
+
     <profiles>
         <profile>
             <id>hsqldb</id>
@@ -191,7 +192,6 @@
                 </dependency>
             </dependencies>
         </profile>
-
         <profile>
             <id>postgres</id>
             <dependencies>

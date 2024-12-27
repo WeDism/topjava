@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
+import javax.el.MethodNotFoundException;
 import java.util.List;
 
 @Repository
@@ -59,6 +60,11 @@ public class JdbcUserRepository implements UserRepository {
     public User get(int id) {
         List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE id=?", ROW_MAPPER, id);
         return DataAccessUtils.singleResult(users);
+    }
+
+    @Override
+    public User getUserWithMeals(int id) {
+        throw new MethodNotFoundException();
     }
 
     @Override

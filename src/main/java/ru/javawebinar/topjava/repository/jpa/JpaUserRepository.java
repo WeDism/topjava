@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
+import javax.el.MethodNotFoundException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
@@ -40,6 +41,11 @@ public class JpaUserRepository implements UserRepository {
     @Override
     public User get(int id) {
         return em.find(User.class, id);
+    }
+
+    @Override
+    public User getUserWithMeals(int id) {
+        throw new MethodNotFoundException();
     }
 
     @Override
