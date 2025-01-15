@@ -11,17 +11,16 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.UserTestData.*;
 
-public abstract class UserCommonServiceTest extends ParentCommonServiceTest {
+public abstract class UserCommonServiceTest extends CommonServiceTest {
     @Autowired
-    private UserService service;
+    protected UserService service;
     @Autowired
-    private CacheManager cacheManager;
+    protected CacheManager cacheManager;
 
     @Before
     public void setup() {
@@ -59,14 +58,6 @@ public abstract class UserCommonServiceTest extends ParentCommonServiceTest {
     public void get() {
         User user = service.get(USER_ID);
         USER_MATCHER.assertMatch(user, UserTestData.user);
-    }
-
-    @Test
-    public void getUserWithMeals() {
-        User user = service.getUserWithMeals(USER_ID);
-        user.getMeals().forEach(meal -> meal.setUser(null));
-        user.setMeals(new LinkedHashSet<>(user.getMeals()));
-        USER_MEALS_MATCHER.assertMatch(user, UserTestData.userWithMeals);
     }
 
     @Test

@@ -11,18 +11,13 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import javax.el.MethodNotFoundException;
 import java.util.List;
 
 @Repository
 public class JdbcUserRepository implements UserRepository {
-
     private static final BeanPropertyRowMapper<User> ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
-
     private final JdbcTemplate jdbcTemplate;
-
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
     private final SimpleJdbcInsert insertUser;
 
     @Autowired
@@ -63,8 +58,8 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
-    public User getUserWithMeals(int id) {
-        throw new MethodNotFoundException();
+    public User getWithMeals(int id) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

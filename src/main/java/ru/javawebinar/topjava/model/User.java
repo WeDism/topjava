@@ -20,7 +20,6 @@ import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 @Entity
 @Table(name = "users")
 public class User extends AbstractNamedEntity {
-
     public static final String DELETE = "User.delete";
     public static final String BY_EMAIL = "User.getByEmail";
     public static final String ALL_SORTED = "User.getAllSorted";
@@ -54,8 +53,7 @@ public class User extends AbstractNamedEntity {
     @Range(min = 10, max = 10000)
     private int caloriesPerDay = DEFAULT_CALORIES_PER_DAY;
 
-    @OneToMany
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @OneToMany(mappedBy = "user")
     private Set<Meal> meals;
 
     public User() {

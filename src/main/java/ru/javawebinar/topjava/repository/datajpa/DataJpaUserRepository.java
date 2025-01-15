@@ -32,7 +32,7 @@ public class DataJpaUserRepository implements UserRepository {
         return crudRepository.findById(id).orElse(null);
     }
 
-    public User getUserWithMeals(int id) {
+    public User getWithMeals(int id) {
         return this.crudRepository.getUserWithMeals(id);
     }
 

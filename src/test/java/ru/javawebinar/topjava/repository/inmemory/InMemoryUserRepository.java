@@ -4,7 +4,6 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import javax.el.MethodNotFoundException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -31,8 +30,8 @@ public class InMemoryUserRepository extends InMemoryBaseRepository<User> impleme
     }
 
     @Override
-    public User getUserWithMeals(int id) {
-        throw new MethodNotFoundException();
+    public User getWithMeals(int id) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

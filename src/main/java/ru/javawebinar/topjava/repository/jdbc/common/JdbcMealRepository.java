@@ -8,22 +8,20 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Repository
-public abstract class JdbcCommonMealRepository implements MealRepository {
+public abstract class JdbcMealRepository implements MealRepository {
     protected static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
     protected final JdbcTemplate jdbcTemplate;
     protected final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     protected final SimpleJdbcInsert insertMeal;
 
     @Autowired
-    public JdbcCommonMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public JdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.insertMeal = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("meal")
                 .usingGeneratedKeyColumns("id");
@@ -71,6 +69,11 @@ public abstract class JdbcCommonMealRepository implements MealRepository {
     public List<Meal> getAll(int userId) {
         return jdbcTemplate.query(
                 "SELECT * FROM meal WHERE user_id=? ORDER BY date_time DESC", ROW_MAPPER, userId);
+    }
+
+    @Override
+    public Meal getWithUser(int id, int userId) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

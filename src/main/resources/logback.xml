@@ -3,7 +3,7 @@
 
     <!-- To enable JMX Management -->
     <jmxConfigurator/>
-
+    <logger name="org.springframework.orm.jpa" level="debug"/>
     <appender name="file" class="ch.qos.logback.core.FileAppender">
         <file>${TOPJAVA_ROOT}/log/topjava.log</file>
 
