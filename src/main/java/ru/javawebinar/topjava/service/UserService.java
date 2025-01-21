@@ -35,6 +35,7 @@ public class UserService {
     public User get(int id) {
         return checkNotFoundWithId(repository.get(id), id);
     }
+
     public User getWithMeals(int id) {
         return checkNotFoundWithId(repository.getWithMeals(id), id);
     }

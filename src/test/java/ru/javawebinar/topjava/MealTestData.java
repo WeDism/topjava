@@ -14,6 +14,7 @@ public class MealTestData {
 
     public static final int NOT_FOUND = 10;
     public static final int MEAL1_ID = START_SEQ + 3;
+    public static final int MEAL_NON_EXIST_ID = START_SEQ * 2;
     public static final int ADMIN_MEAL_ID = START_SEQ + 10;
 
     public static final Meal meal1 = new Meal(MEAL1_ID, of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);

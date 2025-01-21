@@ -46,5 +46,6 @@ public abstract class CommonServiceTest {
                 "\n---------------------------------" +
                 results +
                 "\n---------------------------------");
+        results.setLength(0);
     }
 }

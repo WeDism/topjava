@@ -19,7 +19,7 @@ public class SpringMain {
     public static void main(String[] args) {
         // java 7 automatic resource management (ARM)
         try (GenericApplicationContext appCtx = new GenericApplicationContext()) {
-            appCtx.getEnvironment().setActiveProfiles(Profiles.DATAJPA, Profiles.POSTGRES_DB);
+            appCtx.getEnvironment().setActiveProfiles(Profiles.DATAJPA, Profiles.getActiveDbProfile());
             XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(appCtx);
             reader.loadBeanDefinitions(new ClassPathResource("spring/spring-app.xml"), new ClassPathResource("spring/spring-db.xml"));
             appCtx.refresh();

@@ -17,7 +17,6 @@ public class DataJpaUserServiceTest extends UserCommonServiceTest {
     @Test
     public void getWithMeals() {
         User user = super.service.getWithMeals(USER_ID);
-        user.getMeals().forEach(meal -> meal.setUser(null));
         user.setMeals(new LinkedHashSet<>(user.getMeals()));
         USER_MEALS_MATCHER.assertMatch(user, UserTestData.userWithMeals);
     }
