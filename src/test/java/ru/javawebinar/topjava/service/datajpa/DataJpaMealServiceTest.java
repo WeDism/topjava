@@ -20,8 +20,12 @@ public class DataJpaMealServiceTest extends MealCommonServiceTest {
     }
 
     @Test
-    public void getWithoutMeals() {
-        Assert.assertThrows(NotFoundException.class, () -> super.service.getWithUser(MealTestData.MEAL_NON_EXIST_ID, UserTestData.USER_ID));
+    public void assertThrowsEmptyMeals() {
+        Assert.assertThrows(NotFoundException.class, () -> super.service.getWithUser(MealTestData.MEAL1_ID, UserTestData.GUEST_ID));
     }
 
+    @Test
+    public void assertThrowsNotFoundForeignMeal() {
+        Assert.assertThrows(NotFoundException.class, () -> super.service.getWithUser(MealTestData.NOT_FOUND, UserTestData.USER_ID));
+    }
 }
