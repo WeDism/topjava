@@ -10,16 +10,17 @@ import ru.javawebinar.topjava.repository.jdbc.common.JdbcMealRepository;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Date;
 
 @Repository
 @Profile(Profiles.HSQL_DB)
-public class HsqlJdbcMealRepository extends JdbcMealRepository {
+public class HsqlJdbcMealRepository extends JdbcMealRepository<Date> {
     public HsqlJdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         super(jdbcTemplate, namedParameterJdbcTemplate);
     }
 
     @Override
-    public Object getLocalDateTimeByDBMS(LocalDateTime localDateTime) {
+    protected Date getLocalDateTimeByDBMS(LocalDateTime localDateTime) {
         return Timestamp.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 }
