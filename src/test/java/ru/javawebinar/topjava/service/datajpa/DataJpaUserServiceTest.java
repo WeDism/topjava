@@ -9,8 +9,7 @@ import ru.javawebinar.topjava.service.common.UserCommonServiceTest;
 
 import java.util.LinkedHashSet;
 
-import static ru.javawebinar.topjava.UserTestData.USER_ID;
-import static ru.javawebinar.topjava.UserTestData.USER_MEALS_MATCHER;
+import static ru.javawebinar.topjava.UserTestData.*;
 
 @ActiveProfiles(Profiles.DATAJPA)
 public class DataJpaUserServiceTest extends UserCommonServiceTest {
@@ -19,5 +18,11 @@ public class DataJpaUserServiceTest extends UserCommonServiceTest {
         User user = super.service.getWithMeals(USER_ID);
         user.setMeals(new LinkedHashSet<>(user.getMeals()));
         USER_MEALS_MATCHER.assertMatch(user, UserTestData.userWithMeals);
+    }
+
+    @Test
+    public void getUserNotOwnMeals() {
+        User user = super.service.getWithMeals(GUEST_ID);
+        USER_MEALS_MATCHER.assertMatch(user, guest);
     }
 }

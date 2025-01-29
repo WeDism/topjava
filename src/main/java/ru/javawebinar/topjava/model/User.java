@@ -54,6 +54,7 @@ public class User extends AbstractNamedEntity {
     private int caloriesPerDay = DEFAULT_CALORIES_PER_DAY;
 
     @OneToMany(mappedBy = "user")
+//    @OrderBy("dateTime")
     private Set<Meal> meals;
 
     public User() {
