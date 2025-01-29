@@ -10,8 +10,6 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.common.MealCommonServiceTest;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.util.List;
-
 @ActiveProfiles(Profiles.DATAJPA)
 public class DataJpaMealServiceTest extends MealCommonServiceTest {
     @Test
