@@ -8,11 +8,11 @@
 </head>
 <body>
 <section>
-    <h3><a href="index.html">Home</a></h3>
+    <jsp:include page="fragments/home.jsp"/>
     <hr>
-    <h2>${param.action == 'create' ? 'Create meal' : 'Edit meal'}</h2>
+    <h2>${requestScope.action == 'create' ? 'Create meal' : 'Edit meal'}</h2>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
-    <form method="post" action="meals">
+    <form method="post" action=${requestScope.action == 'create' ? 'create' : 'update'}>
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt>DateTime:</dt>
