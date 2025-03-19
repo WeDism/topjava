@@ -4,17 +4,15 @@
 <%@ taglib prefix="fn" uri="http://topjava.javawebinar.ru/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
-<head>
-    <title>Meals</title>
-    <jsp:include page="fragments/headTag.jsp"/>
-</head>
+<jsp:include page="fragments/headTag.jsp">
+    <jsp:param name="fragmentTitle" value="meals.title"/>
+</jsp:include>
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
     <hr/>
     <h2><spring:message code="meal.title"/></h2>
-    <form method="get" action="filter">
-        <input type="hidden" name="action" value="filter">
+    <form method="get" action="${pageContext.request.contextPath}/meals/filter">
         <dl>
             <dt><spring:message code="meal.from_date"/>:</dt>
             <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
@@ -34,7 +32,7 @@
         <button type="submit"><spring:message code="meal.filter"/></button>
     </form>
     <hr/>
-    <a href="add"><spring:message code="meal.add_meal"/></a>
+    <a href="${pageContext.request.contextPath}/meals/add"><spring:message code="meal.add_meal"/></a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
@@ -57,8 +55,8 @@
                 </td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
-                <td><a href="mealForm?id=${meal.id}"><spring:message code="meal.table.update"/></a></td>
-                <td><a href="delete?id=${meal.id}"><spring:message code="meal.table.delete"/></a></td>
+                <td><a href="${pageContext.request.contextPath}/meals/update?id=${meal.id}"><spring:message code="meal.table.update"/></a></td>
+                <td><a href="${pageContext.request.contextPath}/meals/delete?id=${meal.id}"><spring:message code="meal.table.delete"/></a></td>
             </tr>
         </c:forEach>
     </table>

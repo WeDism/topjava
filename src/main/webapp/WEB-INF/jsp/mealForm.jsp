@@ -2,17 +2,19 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
-<head>
-    <title><spring:message code="meal.title"/></title>
-    <jsp:include page="fragments/headTag.jsp"/>
-</head>
+<jsp:include page="fragments/headTag.jsp">
+    <jsp:param name="fragmentTitle" value="meal.title"/>
+</jsp:include>
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
     <hr>
-    <h2>${pageContext.request.contextPath.contains('add') ? 'Create meal' : 'Edit meal'}</h2>
+    <c:set var="myContext" value="${pageContext.request.contextPath}"/>
+    <c:set var="isContainsAddValue"
+           value="${pageContext.request.getAttribute('javax.servlet.forward.request_uri').contains('add')}"/>
+    <h2><spring:message code="${isContainsAddValue ? 'meal.create' : 'meal.edit'}"/></h2>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
-    <form method="post" action=${pageContext.request.contextPath.contains('add') ? 'create' : 'update'}>
+    <form method="post" action="${myContext}/meals/${isContainsAddValue ? 'create' : 'update'}">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt><spring:message code="meal_form.datetime"/>:</dt>

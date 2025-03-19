@@ -4,14 +4,13 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
-<head>
-    <title>Users</title>
-</head>
+<jsp:include page="fragments/headTag.jsp">
+    <jsp:param name="fragmentTitle" value="users.title"/>
+</jsp:include>
 <body>
-<jsp:include page="fragments/headTag.jsp"/>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
-    <h3><spring:message code="user.title"/></h3>
+    <h3><spring:message code="users.title"/></h3>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>

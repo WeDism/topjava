@@ -6,6 +6,8 @@ import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.AbstractMealServiceTest;
 
+import javax.validation.ConstraintViolationException;
+
 import static ru.javawebinar.topjava.MealTestData.getNew;
 import static ru.javawebinar.topjava.Profiles.JDBC;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
@@ -14,7 +16,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 public class JdbcMealServiceTest extends AbstractMealServiceTest {
     @Test
     public void createValidationTest() {
-        Assert.assertThrows(RuntimeException.class, () -> {
+        Assert.assertThrows(ConstraintViolationException.class, () -> {
             Meal aNew = getNew();
             aNew.setDescription("");
             service.create(aNew, USER_ID);
