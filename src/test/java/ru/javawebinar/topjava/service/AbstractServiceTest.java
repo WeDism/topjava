@@ -40,6 +40,10 @@ public abstract class AbstractServiceTest {
         return Arrays.stream(env.getActiveProfiles()).noneMatch(Profiles.JDBC::equalsIgnoreCase);
     }
 
+    protected boolean isJPAProfile() {
+        return Arrays.stream(env.getActiveProfiles()).anyMatch(Profiles.JPA::equalsIgnoreCase);
+    }
+
     //  Check root cause in JUnit: https://github.com/junit-team/junit4/pull/778
     protected <T extends Throwable> void validateRootCause(Class<T> rootExceptionClass, Runnable runnable) {
         assertThrows(rootExceptionClass, () -> {

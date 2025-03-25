@@ -33,6 +33,6 @@ public class MealTestData {
     }
 
     public static Meal getUpdated() {
-        return new Meal(MEAL1_ID, meal1.getDateTime().plus(2, ChronoUnit.MINUTES), "Обновленный завтрак", 200);
+        return new Meal(ADMIN_MEAL_ID, adminMeal1.getDateTime().plus(2, ChronoUnit.MINUTES), "Обновленный Админ ланч", 200);
     }
 }

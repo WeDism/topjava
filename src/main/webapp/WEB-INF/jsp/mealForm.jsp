@@ -9,12 +9,11 @@
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
     <hr>
-    <c:set var="myContext" value="${pageContext.request.contextPath}"/>
     <c:set var="isContainsAddValue"
            value="${pageContext.request.getAttribute('javax.servlet.forward.request_uri').contains('add')}"/>
     <h2><spring:message code="${isContainsAddValue ? 'meal.create' : 'meal.edit'}"/></h2>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
-    <form method="post" action="${myContext}/meals/${isContainsAddValue ? 'create' : 'update'}">
+    <form method="post" action="meals/${isContainsAddValue ? 'create' : 'update'}">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt><spring:message code="meal_form.datetime"/>:</dt>

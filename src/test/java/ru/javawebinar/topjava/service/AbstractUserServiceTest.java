@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.Assume;
+import org.assertj.core.api.Assertions;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -8,14 +9,17 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataAccessException;
+import org.springframework.transaction.TransactionSystemException;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.JpaUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import javax.persistence.NoResultException;
 import javax.validation.ConstraintViolationException;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -87,6 +91,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         User updated = UserTestData.getUpdated();
         service.update(updated);
         UserTestData.USER_MATCHER.assertMatch(service.get(UserTestData.USER_ID), UserTestData.getUpdated());
+        service.update(UserTestData.user); // Вернул обратно измененное значение. Это имелось ввиду?
+        UserTestData.USER_MATCHER.assertMatch(service.getAll(), UserTestData.admin, UserTestData.guest, UserTestData.user);
     }
 
     @Test
@@ -97,11 +103,78 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void createWithException() {
-        Assume.assumeTrue(super.isNotJdbcProfile());
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "  ", "mail@yandex.ru", "password", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "  ", "password", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "  ", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "password", 9, true, new Date(), Set.of())));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "password", 10001, true, new Date(), Set.of())));
+    }
+
+    @Test
+    public void createValidationTest() {
+        if (super.isNotJdbcProfile())
+            Assert.assertThrows(TransactionSystemException.class, () -> {
+                User aNew = UserTestData.getNew();
+                aNew.setEmail("");
+                service.create(aNew);
+            });
+        else Assert.assertThrows(ConstraintViolationException.class, () -> {
+            User aNew = UserTestData.getNew();
+            aNew.setEmail("");
+            service.create(aNew);
+        });
+    }
+
+    @Test
+    public void getByNotExistEmail() {
+        if (super.isJPAProfile())
+            Assert.assertThrows(NoResultException.class, () -> service.getByEmail("not_exist@gmail.com"));
+        else Assert.assertThrows(NotFoundException.class, () -> service.getByEmail("not_exist@gmail.com"));
+    }
+
+    @Test
+    public void getByEmailWithoutUserRole() {
+        User user = service.getByEmail("guest@gmail.com");
+        UserTestData.USER_MATCHER.assertMatch(user, UserTestData.guest);
+    }
+
+    @Test
+    public void getUserWithoutRole() {
+        User user = service.get(UserTestData.GUEST_ID);
+        UserTestData.USER_MATCHER.assertMatch(user, UserTestData.guest);
+    }
+
+    @Test
+    public void deleteAllRoles() {
+        User updated = new User(UserTestData.admin);
+        updated.setRoles(List.of());
+        service.update(updated);
+        Assertions.assertThat(service.get(UserTestData.ADMIN_ID).getRoles()).isEqualTo(EnumSet.noneOf(Role.class));
+    }
+
+    @Test
+    public void addAllRoles() {
+        User updated = new User(UserTestData.admin);
+        updated.setRoles(List.of());
+        service.update(updated);
+        updated.setRoles(UserTestData.admin.getRoles());
+        service.update(updated);
+        UserTestData.USER_MATCHER.assertMatch(service.get(UserTestData.ADMIN_ID), UserTestData.admin);
+    }
+
+    @Test
+    public void updateGuestRoles() {
+        User updated = new User(UserTestData.guest);
+        updated.setRoles(List.of(Role.USER));
+        service.update(updated);
+        Assert.assertEquals(service.get(UserTestData.GUEST_ID).getRoles(), EnumSet.of(Role.USER));
+    }
+
+    @Test
+    public void addUserRole() {
+        User updated = new User(UserTestData.user);
+        updated.setRoles(List.of(Role.USER, Role.ADMIN));
+        service.update(updated);
+        Assert.assertEquals(service.get(UserTestData.USER_ID).getRoles(), EnumSet.of(Role.USER, Role.ADMIN));
     }
 }

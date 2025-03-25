@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 
 import javax.servlet.ServletException;
@@ -25,13 +26,12 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 
 @Controller
 @RequestMapping("meals")
-public class JspMealController {
+public class JspMealController extends MealController {
     private static final Logger log = LoggerFactory.getLogger(JspMealController.class);
-    private final MealRestController mealController;
 
     @Autowired
-    public JspMealController(MealRestController mealController) {
-        this.mealController = mealController;
+    public JspMealController(MealService service) {
+        super(service);
     }
 
     @PostMapping("create")
@@ -40,8 +40,8 @@ public class JspMealController {
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
-        log.debug("post create {}", meal);
-        mealController.create(meal);
+        log.info("post create {}", meal);
+        super.create(meal);
         return "redirect:/meals";
     }
 
@@ -52,16 +52,16 @@ public class JspMealController {
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
         int id = this.getId(request);
-        mealController.update(meal, id);
-        log.debug("post update {} id {}", meal, id);
+        super.update(meal, id);
+        log.info("post update {} id {}", meal, id);
         return "redirect:/meals";
     }
 
     @GetMapping("delete")
     public String delete(HttpServletRequest request) throws ServletException, IOException {
         int id = this.getId(request);
-        mealController.delete(id);
-        log.debug("get delete id {}", id);
+        super.delete(id);
+        log.info("get delete id {}", id);
         return "redirect:/meals";
     }
 
@@ -69,15 +69,15 @@ public class JspMealController {
     public String getCreate(HttpServletRequest request) {
         Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
         request.setAttribute("meal", meal);
-        log.debug("get add meal {} action create", meal);
+        log.info("get add meal {} action create", meal);
         return "mealForm";
     }
 
     @GetMapping("update")
     public String getUpdate(HttpServletRequest request) {
-        Meal meal = mealController.get(this.getId(request));
+        Meal meal = super.get(this.getId(request));
         request.setAttribute("meal", meal);
-        log.debug("get update {}", meal);
+        log.info("get update {}", meal);
         return "mealForm";
     }
 
@@ -87,17 +87,17 @@ public class JspMealController {
         LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
         LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
         LocalTime endTime = parseLocalTime(request.getParameter("endTime"));
-        List<MealTo> between = mealController.getBetween(startDate, startTime, endDate, endTime);
+        List<MealTo> between = super.getBetween(startDate, startTime, endDate, endTime);
         request.setAttribute("meals", between);
-        log.debug("get filter meals {} startDate {} endDate {} startTime {} endTime {}", between, startDate, endDate, startTime, endTime);
+        log.trace("get filter meals {} startDate {} endDate {} startTime {} endTime {}", between, startDate, endDate, startTime, endTime);
         return "meals";
     }
 
     @GetMapping
     public String getAll(HttpServletRequest request) throws ServletException, IOException {
-        List<MealTo> all = mealController.getAll();
+        List<MealTo> all = super.getAll();
         request.setAttribute("meals", all);
-        log.debug("get meals {} ", all);
+        log.trace("get meals {} ", all);
         return "meals";
     }
 

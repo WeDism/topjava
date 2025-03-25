@@ -24,8 +24,8 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Test
     public void delete() {
-        service.delete(MEAL1_ID, USER_ID);
-        assertThrows(NotFoundException.class, () -> service.get(MEAL1_ID, USER_ID));
+        service.delete(ADMIN_MEAL_ID, ADMIN_ID);
+        assertThrows(NotFoundException.class, () -> service.get(ADMIN_MEAL_ID, ADMIN_ID));
     }
 
     @Test
@@ -40,12 +40,12 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Test
     public void create() {
-        Meal created = service.create(getNew(), USER_ID);
+        Meal created = service.create(getNew(), ADMIN_ID);
         int newId = created.id();
         Meal newMeal = getNew();
         newMeal.setId(newId);
         MEAL_MATCHER.assertMatch(created, newMeal);
-        MEAL_MATCHER.assertMatch(service.get(newId, USER_ID), newMeal);
+        MEAL_MATCHER.assertMatch(service.get(newId, ADMIN_ID), newMeal);
     }
 
     @Test
@@ -73,15 +73,15 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     @Test
     public void update() {
         Meal updated = getUpdated();
-        service.update(updated, USER_ID);
-        MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), getUpdated());
+        service.update(updated, ADMIN_ID);
+        MEAL_MATCHER.assertMatch(service.get(ADMIN_MEAL_ID, ADMIN_ID), getUpdated());
     }
 
     @Test
     public void updateNotOwn() {
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> service.update(getUpdated(), ADMIN_ID));
-        Assert.assertEquals("Not found entity with id=" + MEAL1_ID, exception.getMessage());
-        MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), meal1);
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> service.update(getUpdated(), USER_ID));
+        Assert.assertEquals("Not found entity with id=" + ADMIN_MEAL_ID, exception.getMessage());
+        MEAL_MATCHER.assertMatch(service.get(ADMIN_MEAL_ID, ADMIN_ID), adminMeal1);
     }
 
     @Test
