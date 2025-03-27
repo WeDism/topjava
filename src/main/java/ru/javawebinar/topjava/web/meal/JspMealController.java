@@ -1,7 +1,5 @@
 package ru.javawebinar.topjava.web.meal;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +25,6 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 @Controller
 @RequestMapping("meals")
 public class JspMealController extends MealController {
-    private static final Logger log = LoggerFactory.getLogger(JspMealController.class);
 
     @Autowired
     public JspMealController(MealService service) {
@@ -40,7 +37,7 @@ public class JspMealController extends MealController {
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
-        log.info("post create {}", meal);
+        super.log.info("post create {}", meal);
         super.create(meal);
         return "redirect:/meals";
     }
@@ -53,7 +50,7 @@ public class JspMealController extends MealController {
                 Integer.parseInt(request.getParameter("calories")));
         int id = this.getId(request);
         super.update(meal, id);
-        log.info("post update {} id {}", meal, id);
+        super.log.info("post update {} id {}", meal, id);
         return "redirect:/meals";
     }
 
@@ -61,7 +58,7 @@ public class JspMealController extends MealController {
     public String delete(HttpServletRequest request) throws ServletException, IOException {
         int id = this.getId(request);
         super.delete(id);
-        log.info("get delete id {}", id);
+        super.log.info("get delete id {}", id);
         return "redirect:/meals";
     }
 
@@ -69,7 +66,7 @@ public class JspMealController extends MealController {
     public String getCreate(HttpServletRequest request) {
         Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
         request.setAttribute("meal", meal);
-        log.info("get add meal {} action create", meal);
+        super.log.info("get add meal {} action create", meal);
         return "mealForm";
     }
 
@@ -77,7 +74,7 @@ public class JspMealController extends MealController {
     public String getUpdate(HttpServletRequest request) {
         Meal meal = super.get(this.getId(request));
         request.setAttribute("meal", meal);
-        log.info("get update {}", meal);
+        super.log.info("get update {}", meal);
         return "mealForm";
     }
 
@@ -89,7 +86,7 @@ public class JspMealController extends MealController {
         LocalTime endTime = parseLocalTime(request.getParameter("endTime"));
         List<MealTo> between = super.getBetween(startDate, startTime, endDate, endTime);
         request.setAttribute("meals", between);
-        log.trace("get filter meals {} startDate {} endDate {} startTime {} endTime {}", between, startDate, endDate, startTime, endTime);
+        super.log.trace("get filter meals {} startDate {} endDate {} startTime {} endTime {}", between, startDate, endDate, startTime, endTime);
         return "meals";
     }
 
@@ -97,7 +94,7 @@ public class JspMealController extends MealController {
     public String getAll(HttpServletRequest request) throws ServletException, IOException {
         List<MealTo> all = super.getAll();
         request.setAttribute("meals", all);
-        log.trace("get meals {} ", all);
+        super.log.trace("get meals {} ", all);
         return "meals";
     }
 
