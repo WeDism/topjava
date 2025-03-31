@@ -43,35 +43,33 @@ public class JdbcUserRepository implements UserRepository {
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             int userId = newKey.intValue();
-            this.insertBatchRolesForUser(user, userId);
+            user.setId(userId);
+            this.insertBatchRolesForUser(user);
             user.setId(userId);
         } else {
             boolean isUpdatedUser = namedParameterJdbcTemplate.update("""
                        UPDATE users SET name=:name, email=:email, password=:password,
                        registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
                     """, parameterSource) > 0;
-            boolean isUpdatedRole = false;
             if (isUpdatedUser) {
                 List<Role> rolesData = this.jdbcTemplate.queryForList("SELECT role FROM user_role WHERE user_id=?", Role.class, user.getId());
                 Set<Role> roles = !rolesData.isEmpty() ? EnumSet.copyOf(rolesData) : EnumSet.noneOf(Role.class);
-                isUpdatedRole = !roles.equals(EnumSet.copyOf(user.getRoles()));
+                boolean isUpdatedRole = !roles.equals(EnumSet.copyOf(user.getRoles()));
                 if (isUpdatedRole) {
                     jdbcTemplate.update("DELETE FROM user_role WHERE user_id=?", user.id());
-                    this.insertBatchRolesForUser(user, user.id());
+                    this.insertBatchRolesForUser(user);
                 }
-            }
-            if (!isUpdatedUser && !isUpdatedRole)
-                return null;
+            } else return null;
         }
         return user;
     }
 
-    private void insertBatchRolesForUser(User user, int userId) {
+    private void insertBatchRolesForUser(User user) {
         jdbcTemplate.batchUpdate("INSERT INTO user_role (role, user_id) VALUES (?, ?)", user.getRoles(),
                 200,
                 (ps, argument) -> {
                     ps.setString(1, argument.name());
-                    ps.setInt(2, userId);
+                    ps.setInt(2, user.id());
                 });
     }
 

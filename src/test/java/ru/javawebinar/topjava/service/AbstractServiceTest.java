@@ -38,10 +38,6 @@ public abstract class AbstractServiceTest {
         return !env.matchesProfiles(Profiles.JDBC);
     }
 
-    protected boolean isJPAProfile() {
-        return env.matchesProfiles(Profiles.JPA);
-    }
-
     //  Check root cause in JUnit: https://github.com/junit-team/junit4/pull/778
     protected <T extends Throwable> void validateRootCause(Class<T> rootExceptionClass, Runnable runnable) {
         assertThrows(rootExceptionClass, () -> {
