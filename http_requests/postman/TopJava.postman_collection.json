@@ -1,0 +1,67 @@
+{
+	"info": {
+		"_postman_id": "aa719240-f47a-4a90-b1ce-78191cf4323e",
+		"name": "TopJava",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43897122",
+		"_collection_link": "https://wedin-5799961.postman.co/workspace/WeDin's-Workspace~1f2c323a-f5cc-4999-8e1b-612e0c962bf2/collection/43897122-aa719240-f47a-4a90-b1ce-78191cf4323e?action=share&source=collection_link&creator=43897122"
+	},
+	"item": [
+		{
+			"name": "GET all meals",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "GET by id",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE by id",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "POST create by id",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "PUT update by id",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "GET with a filter",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "GET with a filter nulls values",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
