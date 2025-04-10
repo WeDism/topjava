@@ -17,8 +17,8 @@ curl -v -X PUT -H "Content-Type: application/json" http://localhost:8080/topjava
 
 :: GET with a filter
 curl -v -H "Accept: application/json" ^
-"http://localhost:8080/topjava/rest/meals/filter?startDate=2020-01-30&startTime=10:30:00.000&endDate=2020-01-31&endTime=17:30:00.000-05:00"
+"http://localhost:8080/topjava/rest/meals/filter?startDate=2020-01-30&startTime=10:30&endDate=2020-01-31&endTime=17:30"
 
 :: GET with a filter nulls values
 curl -v -H "Accept: application/json" ^
-"http://localhost:8080/topjava/rest/meals/filter?startDate=2020-01-30&startTime=10:30:00.000"
+"http://localhost:8080/topjava/rest/meals/filter?startDate=2020-01-30&startTime=10:30"

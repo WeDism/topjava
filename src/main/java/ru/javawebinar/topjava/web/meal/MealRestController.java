@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.web.meal;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.converter.annotation.CustomDateTimeFormat;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -56,10 +56,10 @@ public class MealRestController extends AbstractMealController {
 
     @Override
     @GetMapping("/filter")
-    public List<MealTo> getBetween(@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam(required = false) LocalDate startDate,
-                                   @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) @RequestParam(required = false) LocalTime startTime,
-                                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam(required = false) LocalDate endDate,
-                                   @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) @RequestParam(required = false) LocalTime endTime) {
+    public List<MealTo> getBetween(@CustomDateTimeFormat(type = CustomDateTimeFormat.Type.DATE) @RequestParam(required = false) LocalDate startDate,
+                                   @CustomDateTimeFormat(type = CustomDateTimeFormat.Type.TIME) @RequestParam(required = false) LocalTime startTime,
+                                   @CustomDateTimeFormat(type = CustomDateTimeFormat.Type.DATE) @RequestParam(required = false) LocalDate endDate,
+                                   @CustomDateTimeFormat(type = CustomDateTimeFormat.Type.TIME) @RequestParam(required = false) LocalTime endTime) {
         return super.getBetween(startDate, startTime, endDate, endTime);
     }
 }
