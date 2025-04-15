@@ -1,12 +1,12 @@
-package ru.javawebinar.topjava.util.converter.formatter_factory;
+package ru.javawebinar.topjava.web.converter.formatter_factory;
 
 import org.springframework.format.AnnotationFormatterFactory;
 import org.springframework.format.Formatter;
 import org.springframework.format.Parser;
 import org.springframework.format.Printer;
-import ru.javawebinar.topjava.util.converter.CustomDateFormatter;
-import ru.javawebinar.topjava.util.converter.CustomTimeFormatter;
-import ru.javawebinar.topjava.util.converter.annotation.CustomDateTimeFormat;
+import ru.javawebinar.topjava.web.converter.CustomDateFormatter;
+import ru.javawebinar.topjava.web.converter.CustomTimeFormatter;
+import ru.javawebinar.topjava.web.converter.annotation.CustomDateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -32,14 +32,9 @@ public class CustomDateTimeFormatAnnotationFormatterFactory implements Annotatio
     }
 
     private Formatter<?> getFormatter(CustomDateTimeFormat annotation, Class<?> fieldType) {
-        switch (annotation.type()) {
-            case DATE -> {
-                return new CustomDateFormatter();
-            }
-            case TIME -> {
-                return new CustomTimeFormatter();
-            }
-        }
-        return null;
+        return switch (annotation.type()) {
+            case DATE -> new CustomDateFormatter();
+            case TIME -> new CustomTimeFormatter();
+        };
     }
 }

@@ -10,15 +10,6 @@
         </bean>
     -->
     <import resource="spring-cache.xml"/>
-    <bean id="customDateTimeFormatAnnotationFormatterFactory" class="ru.javawebinar.topjava.util.converter.formatter_factory.CustomDateTimeFormatAnnotationFormatterFactory"/>
-
-    <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
-        <property name="formatters">
-            <set>
-                <ref bean="customDateTimeFormatAnnotationFormatterFactory"/>
-            </set>
-        </property>
-    </bean>
 
     <context:component-scan base-package="ru.javawebinar.**.service"/>
 </beans>

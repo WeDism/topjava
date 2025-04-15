@@ -19,6 +19,7 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 public abstract class AbstractMealController {
     private final Logger log = LoggerFactory.getLogger(getClass());
+    public final static String ID = "/{id}";
 
     @Autowired
     private MealService service;
