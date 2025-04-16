@@ -2,9 +2,11 @@ package ru.javawebinar.topjava;
 
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
@@ -16,7 +18,7 @@ public class UserTestData {
     public static final int GUEST_ID = START_SEQ + 2;
     public static final int NOT_FOUND = 10;
 
-    public static final User user = new User(USER_ID, "User", "user@yandex.ru", "password", Role.USER);
+    public static final User user = new User(USER_ID, "User", "user@yandex.ru", "password", MealsUtil.DEFAULT_CALORIES_PER_DAY, true, new Date(), List.of(Role.USER));
     public static final User admin = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", Role.ADMIN, Role.USER);
     public static final User guest = new User(GUEST_ID, "Guest", "guest@gmail.com", "guest");
 

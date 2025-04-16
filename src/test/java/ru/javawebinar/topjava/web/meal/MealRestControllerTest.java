@@ -9,15 +9,18 @@ import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
+import static ru.javawebinar.topjava.UserTestData.user;
 
 public class MealRestControllerTest extends AbstractControllerTest {
 
@@ -30,7 +33,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MealTestData.MEALTO_MATCHER.contentJson(MealsUtil.getTos(MealTestData.meals, MealsUtil.DEFAULT_CALORIES_PER_DAY)));
+                .andExpect(MealTestData.MEALTO_MATCHER.contentJson(MealsUtil.getTos(MealTestData.meals, user.getCaloriesPerDay())));
     }
 
     @Test
@@ -39,9 +42,8 @@ public class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MealTestData.MEALTO_MATCHER
-                        .contentJson(MealsUtil.getTos(MealTestData.meals, MealsUtil.DEFAULT_CALORIES_PER_DAY)
-                                .stream().filter(meal -> meal.getId().equals(MealTestData.meal1.id())).findAny().orElse(null)));
+                .andExpect(MealTestData.MEAL_MATCHER
+                        .contentJson(MealTestData.meal1));
     }
 
     @Test
@@ -49,6 +51,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.delete(MealRestController.REST_URL + AbstractMealController.ID, MealTestData.meal4.id()))
                 .andExpect(status().isNoContent())
                 .andDo(print());
+        assertThrows(NotFoundException.class, () -> mealService.get(MealTestData.meal4.id(), USER_ID));
     }
 
     @Test
@@ -84,7 +87,21 @@ public class MealRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MealTestData.MEALTO_MATCHER.contentJson(
-                        MealsUtil.getTos(MealTestData.meals, MealsUtil.DEFAULT_CALORIES_PER_DAY).stream()
+                        MealsUtil.getTos(MealTestData.meals, user.getCaloriesPerDay()).stream()
                                 .filter(meal -> meal.getId().equals(MealTestData.meal2.id()) || meal.getId().equals(MealTestData.meal6.id())).collect(Collectors.toList())));
+    }
+
+    @Test
+    void getBetweenWithNullValues() throws Exception {
+        perform(MockMvcRequestBuilders.get(MealRestController.REST_URL + MealRestController.FILTER)
+                .param("startDate", "")
+                .param("startTime", "")
+                .param("endDate", "")
+                .param("endTime", ""))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MealTestData.MEALTO_MATCHER.contentJson(
+                        MealsUtil.getTos(MealTestData.meals, user.getCaloriesPerDay())));
     }
 }
