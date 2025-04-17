@@ -4,7 +4,6 @@ import org.assertj.core.matcher.AssertionMatcher;
 import org.junit.jupiter.api.Test;
 import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.User;
-import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.List;
 
@@ -39,7 +38,6 @@ class RootControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("meals"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/meals.jsp"))
-                .andExpect(model().attribute("meals",
-                        MealsUtil.getTos(MealTestData.meals, SecurityUtil.authUserCaloriesPerDay())));
+                .andExpect(model().attribute("meals", MealTestData.mealsTo));
     }
 }

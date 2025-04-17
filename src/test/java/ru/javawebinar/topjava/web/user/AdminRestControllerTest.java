@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -38,15 +37,6 @@ class AdminRestControllerTest extends AbstractControllerTest {
     @Test
     void getByEmail() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + "by-email?email=" + user.getEmail()))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(USER_MATCHER.contentJson(user));
-    }
-
-    @Test
-    void getWithMeals() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + user.id() + "/with-meals"))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_MATCHER.contentJson(user));
@@ -91,7 +81,17 @@ class AdminRestControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(USER_MATCHER.contentJson(admin, guest, user))
-                .andExpect(result -> MealTestData.MEAL_MATCHER.contentJson(user.getMeals()));
+                .andExpect(USER_MATCHER.contentJson(admin, guest, user));
+    }
+
+    @Test
+    void getWithMeals() throws Exception {
+        super.assumeDataJpa();
+        perform(MockMvcRequestBuilders.get(REST_URL + user.id() + "/with-meals"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(USER_MATCHER.contentJson(user))
+                .andExpect(checkMealsFromUser());
     }
 }

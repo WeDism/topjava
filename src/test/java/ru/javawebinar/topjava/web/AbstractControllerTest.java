@@ -1,18 +1,25 @@
 package ru.javawebinar.topjava.web;
 
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
+import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.Profiles;
+import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import javax.annotation.PostConstruct;
 
@@ -42,6 +49,10 @@ public abstract class AbstractControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    protected void assumeDataJpa() {
+        Assumptions.assumeTrue(env.acceptsProfiles(org.springframework.core.env.Profiles.of(Profiles.DATAJPA)), "DATA-JPA only");
+    }
+
     @PostConstruct
     private void postConstruct() {
         mockMvc = MockMvcBuilders
@@ -52,5 +63,12 @@ public abstract class AbstractControllerTest {
 
     protected ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder);
+    }
+
+    protected static ResultMatcher checkMealsFromUser() {
+        return (MvcResult actual) ->
+                Assertions.assertThat(JsonUtil.readValue(actual.getResponse().getContentAsString(), User.class).getMeals())
+                        .usingRecursiveComparison()
+                        .ignoringFields("user").isEqualTo(MealTestData.meals);
     }
 }

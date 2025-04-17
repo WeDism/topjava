@@ -29,6 +29,14 @@ public class MealTestData {
     public static final Meal adminMeal2 = new Meal(ADMIN_MEAL_ID + 1, of(2020, Month.JANUARY, 31, 21, 0), "Админ ужин", 1500);
 
     public static final List<Meal> meals = List.of(meal7, meal6, meal5, meal4, meal3, meal2, meal1);
+    public static final MealTo mealTo1 = new MealTo(meal1, false);
+    public static final MealTo mealTo2 = new MealTo(meal2, false);
+    public static final MealTo mealTo3 = new MealTo(meal3, false);
+    public static final MealTo mealTo4 = new MealTo(meal4, true);
+    public static final MealTo mealTo5 = new MealTo(meal5, true);
+    public static final MealTo mealTo6 = new MealTo(meal6, true);
+    public static final MealTo mealTo7 = new MealTo(meal7, true);
+    public static final List<MealTo> mealsTo = List.of(mealTo7, mealTo6, mealTo5, mealTo4, mealTo3, mealTo2, mealTo1);
     public static final List<Meal> mealsAll = List.of(adminMeal2, adminMeal1, meal7, meal6, meal5, meal4, meal3, meal2, meal1);
 
     public static Meal getNew() {
