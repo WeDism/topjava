@@ -96,6 +96,11 @@ public class User extends AbstractNamedEntity {
         setRoles(roles);
     }
 
+    public User(Integer id, String name, String email, String password, int caloriesPerDay, boolean enabled, Date registered, Collection<Role> roles, List<Meal> meals) {
+        this(id, name, email, password, caloriesPerDay, enabled, registered, roles);
+        this.meals = meals;
+    }
+
     public String getEmail() {
         return email;
     }
