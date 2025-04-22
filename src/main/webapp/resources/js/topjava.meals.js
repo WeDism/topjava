@@ -1,4 +1,4 @@
-const userAjaxUrl = "admin/users/";
+const userAjaxUrl = "user/meals/";
 
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
@@ -8,27 +8,21 @@ const ctx = {
 // $(document).ready(function () {
 $(function () {
     makeEditable(
-        $("#datatable").DataTable({
+        $("#meals-datatable").DataTable({
             "paging": false,
             "info": true,
             "columns": [
                 {
-                    "data": "name"
+                    "data": "dateTime"
                 },
                 {
-                    "data": "email"
+                    "data": "description"
                 },
                 {
-                    "data": "roles"
+                    "data": "calories"
                 },
                 {
-                    "data": "enabled"
-                },
-                {
-                    "data": "registered"
-                },
-                {
-                    "defaultContent": "Edit",
+                    "defaultContent": "Update",
                     "orderable": false
                 },
                 {
@@ -46,12 +40,11 @@ $(function () {
     );
 });
 
-function updateUserStatus(current) {
-    debugger;
+function saveFilter() {
     $.ajax({
-        type: "PUT",
-        url: ctx.ajaxUrl + "status/" + current.parentElement.parentElement.id,
-        data: {isChecked: current.checked}
+        type: "GET",
+        url: ctx.ajaxUrl + "filter",
+        data: formMeals.serialize()
     }).done(function (data) {
         $("#editRow").modal("hide");
         plainUpdateTable(data);

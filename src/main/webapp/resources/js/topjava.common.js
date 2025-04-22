@@ -1,8 +1,10 @@
 let form;
+let formMeals;
 
 function makeEditable(datatableApi) {
     ctx.datatableApi = datatableApi;
     form = $('#detailsForm');
+    formMeals = $('#meals-filter');
     $(".delete").click(function () {
         if (confirm('Are you sure?')) {
             deleteRow($(this).closest('tr').attr("id"));
@@ -33,9 +35,11 @@ function deleteRow(id) {
 }
 
 function updateTable() {
-    $.get(ctx.ajaxUrl, function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
-    });
+    $.get(ctx.ajaxUrl, plainUpdateTable);
+}
+
+function plainUpdateTable(data) {
+    ctx.datatableApi.clear().rows.add(data).draw();
 }
 
 function save() {

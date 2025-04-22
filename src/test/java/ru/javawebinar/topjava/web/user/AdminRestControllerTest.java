@@ -93,4 +93,21 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_WITH_MEALS_MATCHER.contentJson(admin));
     }
+
+    @Test
+    void updateUserStatus() throws Exception {
+        assumeDataJpa();
+        perform(MockMvcRequestBuilders.put(AdminUIController.ADMIN_USERS + "/status/{id}", GUEST_ID)
+                .param("isChecked", Boolean.FALSE.toString()))
+                .andExpect(status().isNoContent())
+                .andDo(print());
+        guest.setEnabled(false);
+        USER_MATCHER.assertMatch(userService.get(GUEST_ID), guest);
+        perform(MockMvcRequestBuilders.put(AdminUIController.ADMIN_USERS + "/status/{id}", GUEST_ID)
+                .param("isChecked", Boolean.TRUE.toString()))
+                .andExpect(status().isNoContent())
+                .andDo(print());
+        guest.setEnabled(true);
+        USER_MATCHER.assertMatch(userService.get(GUEST_ID), guest); // В базе лежат верные данные, но в базу данный сервис не ходит
+    }
 }
