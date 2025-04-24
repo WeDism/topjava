@@ -28,8 +28,8 @@ public class AdminUIController extends AbstractUserController {
 
     @PutMapping("/status/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateUserStatus(@PathVariable int id, @RequestParam boolean isChecked) {
-        super.updateUserStatus(id, isChecked);
+    public void updateUserStatus(@PathVariable int id, @RequestParam boolean isEnable) {
+        super.updateUserStatus(id, isEnable);
     }
 
     @PostMapping

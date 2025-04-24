@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.util.ValidationUtil;
 
 import java.util.List;
 
@@ -56,7 +57,8 @@ public class UserService {
         return checkNotFoundWithId(repository.getWithMeals(id), id);
     }
 
-    public void updateUserStatus(int id, boolean isChecked) {
-        repository.updateUserStatus(id, isChecked);
+    @CacheEvict(value = "users", allEntries = true)
+    public void updateUserStatus(int id, boolean isEnable) {
+        ValidationUtil.checkOneUpdated(repository.updateUserStatus(id, isEnable));
     }
 }

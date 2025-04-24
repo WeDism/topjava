@@ -1,12 +1,14 @@
-const userAjaxUrl = "user/meals/";
+const mealAjaxUrl = "user/meals/";
+let formMeals;
 
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
-    ajaxUrl: userAjaxUrl
+    ajaxUrl: mealAjaxUrl
 };
 
 // $(document).ready(function () {
 $(function () {
+    formMeals = $('#meals-filter');
     makeEditable(
         $("#meals-datatable").DataTable({
             "paging": false,
@@ -33,7 +35,7 @@ $(function () {
             "order": [
                 [
                     0,
-                    "asc"
+                    "desc"
                 ]
             ]
         })
@@ -46,8 +48,6 @@ function saveFilter() {
         url: ctx.ajaxUrl + "filter",
         data: formMeals.serialize()
     }).done(function (data) {
-        $("#editRow").modal("hide");
         plainUpdateTable(data);
-        successNoty("Saved");
     });
 }

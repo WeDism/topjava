@@ -23,7 +23,7 @@ public interface UserRepository {
         throw new UnsupportedOperationException();
     }
 
-    default void updateUserStatus(int id, boolean isChecked) {
+    default int updateUserStatus(int id, boolean isEnable) {
         throw new UnsupportedOperationException();
     }
 }

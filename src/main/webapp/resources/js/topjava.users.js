@@ -46,15 +46,16 @@ $(function () {
     );
 });
 
-function updateUserStatus(current) {
+function updateUserStatus(current, id) {
     debugger;
     $.ajax({
         type: "PUT",
-        url: ctx.ajaxUrl + "status/" + current.parentElement.parentElement.id,
-        data: {isChecked: current.checked}
-    }).done(function (data) {
-        $("#editRow").modal("hide");
-        plainUpdateTable(data);
+        url: ctx.ajaxUrl + "status/" + id,
+        contentType: 'application/x-www-form-urlencoded',
+        data: {isEnable: current.checked}
+    }).done(function () {
+        if (!current.checked) $(current).closest('tr').css("background-color", "lightcoral");
+        else $(current).closest('tr').css("background-color", "lightgreen");
         successNoty("Saved");
     });
 }

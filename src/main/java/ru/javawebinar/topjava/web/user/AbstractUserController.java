@@ -54,8 +54,8 @@ public abstract class AbstractUserController {
         return service.getWithMeals(id);
     }
 
-    public void updateUserStatus(int id, boolean isChecked) {
-        log.info("updateUserStatus {} status {}", id, isChecked);
-        service.updateUserStatus(id, isChecked);
+    public void updateUserStatus(int id, boolean isEnable) {
+        log.info("updateUserStatus {} status {}", id, isEnable);
+        service.updateUserStatus(id, isEnable);
     }
 }
