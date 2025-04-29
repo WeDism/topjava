@@ -37,4 +37,15 @@ public class InMemoryUserRepository extends InMemoryBaseRepository<User> impleme
                 .findFirst()
                 .orElse(null);
     }
+
+    @Override
+    public boolean updateUserStatus(int id, boolean isEnable) {
+        return getCollection().stream()
+                .anyMatch(u -> {
+                    if (id == u.id()) {
+                        u.setEnabled(isEnable);
+                        return true;
+                    } else return false;
+                });
+    }
 }

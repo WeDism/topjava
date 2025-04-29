@@ -23,7 +23,5 @@ public interface UserRepository {
         throw new UnsupportedOperationException();
     }
 
-    default int updateUserStatus(int id, boolean isEnable) {
-        throw new UnsupportedOperationException();
-    }
+    boolean updateUserStatus(int id, boolean isEnable);
 }

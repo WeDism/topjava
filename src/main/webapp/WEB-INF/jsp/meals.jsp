@@ -65,8 +65,8 @@
                     </td>
                     <td>${meal.description}</td>
                     <td>${meal.calories}</td>
-                    <td><a href="user/meals/update?id=${meal.id}"><spring:message code="common.update"/></a></td>
-                    <td><a class="delete"><spring:message code="common.delete"/></a></td>
+                    <td><a href="user/meals/update?id=${meal.id}"><span class="fa fa-pencil"></span></a></td>
+                    <td><a class="delete"><span class="fa fa-remove"></span></a></td>
                 </tr>
             </c:forEach>
         </table>

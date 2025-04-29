@@ -95,7 +95,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void enable() throws Exception {
+    void checkUserDisable() throws Exception {
         assumeDataJpa();
         perform(MockMvcRequestBuilders.put(AdminRestController.REST_URL + "/status/{id}", GUEST_ID)
                 .param("isEnable", "false"))
@@ -103,6 +103,11 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andDo(print());
         guest.setEnabled(false);
         USER_MATCHER.assertMatch(userService.get(GUEST_ID), guest);
+    }
+
+    @Test
+    void checkUserEnable() throws Exception {
+        assumeDataJpa();
         perform(MockMvcRequestBuilders.put(AdminRestController.REST_URL + "/status/{id}", GUEST_ID)
                 .param("isEnable", "true"))
                 .andExpect(status().isNoContent())

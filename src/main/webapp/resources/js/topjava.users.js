@@ -47,15 +47,23 @@ $(function () {
 });
 
 function updateUserStatus(current, id) {
-    debugger;
     $.ajax({
         type: "PUT",
         url: ctx.ajaxUrl + "status/" + id,
         contentType: 'application/x-www-form-urlencoded',
-        data: {isEnable: current.checked}
-    }).done(function () {
-        if (!current.checked) $(current).closest('tr').css("background-color", "lightcoral");
-        else $(current).closest('tr').css("background-color", "lightgreen");
-        successNoty("Saved");
-    });
+        data: {isEnable: current.checked},
+        success: function () {
+            changeBackgroundColorTr(current)
+            successNoty("Saved");
+        },
+        error: function () {
+            current.checked = !current.checked
+        }
+    })
+}
+
+function changeBackgroundColorTr(current) {
+    !current.checked
+        ? $(current).closest('tr').css("background-color", "lightcoral")
+        : $(current).closest('tr').css("background-color", "lightgreen");
 }

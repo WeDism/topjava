@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -78,11 +79,21 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    void createWithException() throws Exception {
+    void createWithException() {
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "  ", "mail@yandex.ru", "password", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "  ", "password", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "  ", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "password", 9, true, new Date(), Set.of())));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "password", 10001, true, new Date(), Set.of())));
+    }
+
+    @Test
+    void updateUserStatus() {
+        User user = service.get(USER_ID);
+        Assertions.assertTrue(user.isEnabled());
+        service.updateUserStatus(USER_ID, false);
+        user = service.get(USER_ID);
+        Assertions.assertFalse(user.isEnabled());
+        assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND));
     }
 }

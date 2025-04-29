@@ -48,7 +48,7 @@ public class DataJpaUserRepository implements UserRepository {
     }
 
     @Override
-    public int updateUserStatus(int id, boolean isEnable) {
-        return this.crudRepository.updateUserStatus(id, isEnable);
+    public boolean updateUserStatus(int id, boolean isEnable) {
+        return this.crudRepository.updateUserStatus(id, isEnable) != 0;
     }
 }

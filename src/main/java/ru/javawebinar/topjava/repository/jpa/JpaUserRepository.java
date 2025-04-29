@@ -59,6 +59,15 @@ public class JpaUserRepository implements UserRepository {
     }
 
     @Override
+    @Transactional
+    public boolean updateUserStatus(int id, boolean isEnable) {
+        return em.createNamedQuery(User.UPDATE_ENABLE_STATUS)
+                .setParameter("id", id)
+                .setParameter("enabled", isEnable)
+                .executeUpdate() != 0;
+    }
+
+    @Override
     public User getByEmail(String email) {
         List<User> users = em.createNamedQuery(User.BY_EMAIL, User.class)
                 .setParameter(1, email)
