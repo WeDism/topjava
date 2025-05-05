@@ -96,23 +96,23 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
     @Test
     void checkUserDisable() throws Exception {
-        assumeDataJpa();
-        perform(MockMvcRequestBuilders.put(AdminRestController.REST_URL + "/status/{id}", GUEST_ID)
+        perform(MockMvcRequestBuilders.patch(AdminRestController.REST_URL + "/status/{id}", GUEST_ID)
                 .param("isEnable", "false"))
                 .andExpect(status().isNoContent())
                 .andDo(print());
-        guest.setEnabled(false);
-        USER_MATCHER.assertMatch(userService.get(GUEST_ID), guest);
+        User guestClone = cloneTestData(guest);
+        guestClone.setEnabled(false);
+        USER_MATCHER.assertMatch(userService.get(GUEST_ID), guestClone);
     }
 
     @Test
     void checkUserEnable() throws Exception {
-        assumeDataJpa();
-        perform(MockMvcRequestBuilders.put(AdminRestController.REST_URL + "/status/{id}", GUEST_ID)
+        perform(MockMvcRequestBuilders.patch(AdminRestController.REST_URL + "/status/{id}", GUEST_ID)
                 .param("isEnable", "true"))
                 .andExpect(status().isNoContent())
                 .andDo(print());
-        guest.setEnabled(true);
-        USER_MATCHER.assertMatch(userService.get(GUEST_ID), guest); // В базе лежат верные данные, но в базу данный сервис не ходит
+        User guestClone = cloneTestData(guest);
+        guestClone.setEnabled(true);
+        USER_MATCHER.assertMatch(userService.get(GUEST_ID), guestClone);
     }
 }

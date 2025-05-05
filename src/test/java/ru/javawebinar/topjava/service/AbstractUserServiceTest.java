@@ -94,6 +94,10 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         service.updateUserStatus(USER_ID, false);
         user = service.get(USER_ID);
         Assertions.assertFalse(user.isEnabled());
+    }
+
+    @Test
+    void updateStatusByNotFoundedUser() {
         assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND));
     }
 }

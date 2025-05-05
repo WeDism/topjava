@@ -36,10 +36,6 @@ public class ValidationUtil {
         return object;
     }
 
-    public static void checkOneUpdated(int count) {
-        checkNotFound(count == 1, "not updated");
-    }
-
     public static void checkNotFoundWithId(boolean found, int id) {
         checkNotFound(found, "id=" + id);
     }

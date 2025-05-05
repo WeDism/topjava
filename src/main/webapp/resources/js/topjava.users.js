@@ -48,7 +48,7 @@ $(function () {
 
 function updateUserStatus(current, id) {
     $.ajax({
-        type: "PUT",
+        type: "PATCH",
         url: ctx.ajaxUrl + "status/" + id,
         contentType: 'application/x-www-form-urlencoded',
         data: {isEnable: current.checked},
@@ -63,7 +63,5 @@ function updateUserStatus(current, id) {
 }
 
 function changeBackgroundColorTr(current) {
-    !current.checked
-        ? $(current).closest('tr').css("background-color", "lightcoral")
-        : $(current).closest('tr').css("background-color", "lightgreen");
+    $(current).closest('tr').css("background-color", !current.checked ? "lightcoral" : "lightgreen")
 }
