@@ -46,6 +46,11 @@ function updateTableByData(data) {
 }
 
 function save() {
+    let formDataArray = form.serializeArray();
+    formDataArray.forEach(function (item) {
+        if (item.name === 'dateTime')
+            form.find(`[id="dateTime"]`).val(item.value.replace(' ', 'T'))
+    });
     $.ajax({
         type: "POST",
         url: ctx.ajaxUrl,
