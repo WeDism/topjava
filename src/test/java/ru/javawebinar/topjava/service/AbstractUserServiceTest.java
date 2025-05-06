@@ -98,6 +98,6 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     void updateStatusByNotFoundedUser() {
-        assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND));
+        assertThrows(NotFoundException.class, () -> service.updateUserStatus(NOT_FOUND, false));
     }
 }
