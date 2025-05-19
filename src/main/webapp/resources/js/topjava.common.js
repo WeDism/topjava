@@ -23,7 +23,9 @@ function updateRow(id) {
     $("#modalTitle").html(i18n["editTitle"]);
     $.get(ctx.ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {
-            form.find("input[name='" + key + "']").val(value);
+            if (key === 'dateTime')
+                form.find("input[name='" + key + "']").val(value.replace('T', ' '));
+            else form.find("input[name='" + key + "']").val(value);
         });
         $('#editRow').modal();
     });
@@ -46,20 +48,29 @@ function updateTableByData(data) {
 }
 
 function save() {
-    let formDataArray = form.serializeArray();
+    const formDataArray = form.serializeArray();
+    let dateTime;
     formDataArray.forEach(function (item) {
-        if (item.name === 'dateTime')
+        if (item.name === 'dateTime') {
             form.find(`[id="dateTime"]`).val(item.value.replace(' ', 'T'))
+            dateTime = item.value.replace(' ', ' ');
+        }
     });
+    const isAddAction = $("#modalTitle").html() === i18n["addTitle"];
+    const ajaxUrl = isAddAction ? ctx.ajaxUrl : ctx.ajaxUrl + $("#id").attr("value");
     $.ajax({
-        type: "POST",
-        url: ctx.ajaxUrl,
+        type: isAddAction ? "POST" : "PUT",
+        url: ajaxUrl,
         data: form.serialize()
     }).done(function () {
         $("#editRow").modal("hide");
         ctx.updateTable();
         successNoty("common.saved");
-    });
+    }).fail(
+        function () {
+            form.find(`[id="dateTime"]`).val(dateTime)
+        }
+    );
 }
 
 let failedNote;
