@@ -5,10 +5,9 @@ import ru.javawebinar.topjava.HasId;
 
 import javax.persistence.*;
 
-import static ru.javawebinar.topjava.util.Util.getEffectiveClass;
-
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
+import static ru.javawebinar.topjava.util.Util.getEffectiveClass;
 
 @MappedSuperclass
 // http://stackoverflow.com/questions/594597/hibernate-annotations-which-is-better-field-or-property-access

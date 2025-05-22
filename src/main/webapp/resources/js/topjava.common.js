@@ -5,7 +5,7 @@ function makeEditable(datatableApi) {
     form = $('#detailsForm');
 
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
-        failNoty(jqXHR);
+        failNoty(jqXHR, null);
     });
 
     // solve problem with cache in IE: https://stackoverflow.com/a/4303862/548473
@@ -52,23 +52,25 @@ function save() {
     let dateTime;
     formDataArray.forEach(function (item) {
         if (item.name === 'dateTime') {
-            form.find(`[id="dateTime"]`).val(item.value.replace(' ', 'T'))
-            dateTime = item.value.replace(' ', ' ');
+            item.value = item.value.replace(' ', 'T')
+            dateTime = item.name;
         }
     });
+    const data = formDataArray.map((obj) => encodeURIComponent(obj.name) + '=' + encodeURIComponent(obj.value)).join('&')
     const isAddAction = $("#modalTitle").html() === i18n["addTitle"];
     const ajaxUrl = isAddAction ? ctx.ajaxUrl : ctx.ajaxUrl + $("#id").attr("value");
     $.ajax({
         type: isAddAction ? "POST" : "PUT",
         url: ajaxUrl,
-        data: form.serialize()
+        data: data
     }).done(function () {
         $("#editRow").modal("hide");
         ctx.updateTable();
         successNoty("common.saved");
     }).fail(
-        function () {
-            form.find(`[id="dateTime"]`).val(dateTime)
+        function (xhr) {
+            form.find(`[id="dateTime"]`).val(dateTime);
+            failNoty(null, xhr.responseText)
         }
     );
 }
@@ -104,10 +106,12 @@ function renderDeleteBtn(data, type, row) {
     }
 }
 
-function failNoty(jqXHR) {
+function failNoty(jqXHR, message) {
+    const text = message ? "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + message
+        : "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + i18n["common.errorStatus"] + ": " + jqXHR.status + (jqXHR.responseJSON ? "<br>" + jqXHR.responseJSON : "")
     closeNoty();
     failedNote = new Noty({
-        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + i18n["common.errorStatus"] + ": " + jqXHR.status + (jqXHR.responseJSON ? "<br>" + jqXHR.responseJSON : ""),
+        text: text,
         type: "error",
         layout: "bottomRight"
     });

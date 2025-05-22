@@ -88,35 +88,13 @@ $(function () {
 function checkerChangerDate(input) {
     const startDate = $('#startDate').val();
     const endDate = $('#endDate').val();
-    if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
-        const jInput = $(input);
-        const id = jInput.attr('id');
-        if (id === 'startDate')
-            failNoty(i18n["endDate.isEarlier"]);
-        else failNoty(i18n["startDate.isLater"]);
-        jInput.val('');
-    }
+    if (new Date(startDate).getTime() > new Date(endDate).getTime())
+        $(input).val('');
 }
 
 function checkerChangerTime(input) {
     const startTime = $('#startTime').val();
     const endTime = $('#endTime').val();
-    if (startTime && endTime && startTime > endTime) {
-        const jInput = $(input);
-        const id = jInput.attr('id');
-        if (id === 'startTime')
-            failNoty(i18n["endTime.isEarlier"]);
-        else failNoty(i18n["startTime.isLater"]);
-        jInput.val('');
-    }
-}
-
-function failNoty(message) {
-    closeNoty();
-    failedNote = new Noty({
-        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + message,
-        type: "error",
-        layout: "bottomRight"
-    });
-    failedNote.show()
+    if (startTime && endTime && startTime > endTime)
+        $(input).val('');
 }

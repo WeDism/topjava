@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.beans.ConstructorProperties;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -14,12 +15,13 @@ public class MealToPlain extends BaseTo {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     protected final LocalDateTime dateTime;
     @NotBlank
+    @Size(min = 2, max = 120)
     protected final String description;
     @NotNull
     @Range(min = 10, max = 10000)
     protected final Integer calories;
 
-    @ConstructorProperties({"id", "dateTime", "description", "calories", "excess"})
+    @ConstructorProperties({"id", "dateTime", "description", "calories"})
     public MealToPlain(Integer id, LocalDateTime dateTime, String description, Integer calories) {
         super(id);
         this.dateTime = dateTime;

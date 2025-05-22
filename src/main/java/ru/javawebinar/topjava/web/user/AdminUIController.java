@@ -36,14 +36,22 @@ public class AdminUIController extends AbstractUserController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createOrUpdate(@Valid UserTo userTo, BindingResult result) {
+    public ResponseEntity<String> create(@Valid UserTo userTo, BindingResult result) {
         if (result.hasErrors())
             return BindingResultHandler.handleResult(result);
-        if (userTo.isNew()) {
+        if (userTo.isNew())
             super.create(userTo);
-        } else {
+        else ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> update(@Valid UserTo userTo, @PathVariable int id, BindingResult result) {
+        if (result.hasErrors())
+            return BindingResultHandler.handleResult(result);
+        if (userTo.id() == id)
             super.update(userTo, userTo.id());
-        }
+        else ResponseEntity.badRequest().build();
         return ResponseEntity.ok().build();
     }
 
