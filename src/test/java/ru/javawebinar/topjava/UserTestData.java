@@ -40,10 +40,6 @@ public class UserTestData {
         return new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.USER));
     }
 
-    public static User cloneTestData(User user) {
-        return JsonUtil.readValue(JsonUtil.writeValue(user), User.class);
-    }
-
     public static User getUpdated() {
         User updated = new User(user);
         updated.setEmail("update@gmail.com");

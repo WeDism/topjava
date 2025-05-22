@@ -100,7 +100,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .param("isEnable", "false"))
                 .andExpect(status().isNoContent())
                 .andDo(print());
-        User guestClone = cloneTestData(guest);
+        User guestClone = new User(guest);
         guestClone.setEnabled(false);
         USER_MATCHER.assertMatch(userService.get(GUEST_ID), guestClone);
     }
@@ -111,7 +111,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .param("isEnable", "true"))
                 .andExpect(status().isNoContent())
                 .andDo(print());
-        User guestClone = cloneTestData(guest);
+        User guestClone = new User(guest);
         guestClone.setEnabled(true);
         USER_MATCHER.assertMatch(userService.get(GUEST_ID), guestClone);
     }
