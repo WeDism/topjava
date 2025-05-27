@@ -49,9 +49,7 @@ public class AdminUIController extends AbstractUserController {
     public ResponseEntity<String> update(@Valid UserTo userTo, @PathVariable int id, BindingResult result) {
         if (result.hasErrors())
             return BindingResultHandler.handleResult(result);
-        if (userTo.id() == id)
-            super.update(userTo, userTo.id());
-        else ResponseEntity.badRequest().build();
+        super.update(userTo, userTo.id());
         return ResponseEntity.ok().build();
     }
 

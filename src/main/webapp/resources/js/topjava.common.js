@@ -5,7 +5,7 @@ function makeEditable(datatableApi) {
     form = $('#detailsForm');
 
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
-        failNoty(jqXHR, null);
+        failNoty(jqXHR);
     });
 
     // solve problem with cache in IE: https://stackoverflow.com/a/4303862/548473
@@ -62,17 +62,12 @@ function save() {
     $.ajax({
         type: isAddAction ? "POST" : "PUT",
         url: ajaxUrl,
-        data: data
+        data: data,
     }).done(function () {
         $("#editRow").modal("hide");
         ctx.updateTable();
         successNoty("common.saved");
-    }).fail(
-        function (xhr) {
-            form.find(`[id="dateTime"]`).val(dateTime);
-            failNoty(null, xhr.responseText)
-        }
-    );
+    }).fail();
 }
 
 let failedNote;
@@ -106,12 +101,11 @@ function renderDeleteBtn(data, type, row) {
     }
 }
 
-function failNoty(jqXHR, message) {
-    const text = message ? "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + message
-        : "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + i18n["common.errorStatus"] + ": " + jqXHR.status + (jqXHR.responseJSON ? "<br>" + jqXHR.responseJSON : "")
+function failNoty(jqXHR) {
     closeNoty();
     failedNote = new Noty({
-        text: text,
+        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + i18n["common.errorStatus"] + ": " + jqXHR.status
+            + (jqXHR.responseJSON ? "<br>" + jqXHR.responseJSON : ""),
         type: "error",
         layout: "bottomRight"
     });
