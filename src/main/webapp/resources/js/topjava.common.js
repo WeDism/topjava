@@ -57,7 +57,7 @@ function save() {
         }
     });
     const data = formDataArray.map((obj) => encodeURIComponent(obj.name) + '=' + encodeURIComponent(obj.value)).join('&')
-    const isAddAction = $("#modalTitle").html() === i18n["addTitle"];
+    const isAddAction = !form.find('input[name="id"]').val();
     const ajaxUrl = isAddAction ? ctx.ajaxUrl : ctx.ajaxUrl + $("#id").attr("value");
     $.ajax({
         type: isAddAction ? "POST" : "PUT",
